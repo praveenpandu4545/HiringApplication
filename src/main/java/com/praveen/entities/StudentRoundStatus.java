@@ -1,0 +1,27 @@
+package com.praveen.entities;
+import jakarta.persistence.*;
+import lombok.*;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+
+@Entity
+@Table(name = "student_round_status")
+public class StudentRoundStatus {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private int roundNumber;
+    private String roundName;
+
+    private String status; // PENDING / PASSED / FAILED
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "student_id")
+    private Student student;
+}
+
