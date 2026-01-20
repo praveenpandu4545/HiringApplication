@@ -24,5 +24,4 @@ public class StudentController {
             return ResponseEntity.status(400).body("Upload failed: " + e.getMessage());
         }
     }
-
 }

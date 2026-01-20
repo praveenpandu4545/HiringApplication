@@ -3,6 +3,10 @@ package com.praveen.service;
 import com.praveen.entities.*;
 import com.praveen.repository.*;
 import com.praveen.service.StudentService;
+
+import jakarta.transaction.Transactional;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.apache.poi.ss.usermodel.*;
@@ -11,13 +15,14 @@ import java.util.*;
 
 @Service
 public class StudentServiceImpl implements StudentService {
+	
+	@Autowired
+    private DriveRepository driveRepository;
+	
+	@Autowired
+	private StudentRoundStatusRepository studentRoundStatusRepository;
 
-    private final DriveRepository driveRepository;
-
-    public StudentServiceImpl(DriveRepository driveRepository) {
-        this.driveRepository = driveRepository;
-    }
-
+	@Transactional
     @Override
     public void uploadStudentsForDrive(Long driveId, MultipartFile file) {
 
@@ -29,6 +34,17 @@ public class StudentServiceImpl implements StudentService {
         for (Student s : parsedStudents) {
             s.setDrive(drive);                 // owning side
             drive.getStudents().add(s);        // inverse side
+            
+            List<Round> rounds = drive.getRounds();
+            for(Round r : rounds) {
+            	StudentRoundStatus srs = new StudentRoundStatus();
+            	srs.setRoundNumber(r.getRoundNumber());
+            	srs.setRoundName(r.getRoundName());
+            	srs.setStatus("Pending");
+            	srs.setStudent(s);
+//            	studentRoundStatusRepository.save(srs); // automatically gets saved when drive is getting saved below.
+            	s.getRoundStatuses().add(srs);
+            }
         }
 
         driveRepository.save(drive);           // cascade inserts students
