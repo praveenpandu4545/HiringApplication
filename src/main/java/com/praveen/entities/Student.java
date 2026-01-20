@@ -1,5 +1,8 @@
 package com.praveen.entities;
 import java.util.*;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -20,8 +23,9 @@ public class Student {
     private String department;
     private String phone;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "drive_id")
+    @JoinColumn(name = "drive_id")	
     private Drive drive;
 
     @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)

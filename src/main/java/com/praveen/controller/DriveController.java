@@ -22,13 +22,13 @@ public class DriveController {
         return ResponseEntity.ok(savedDrive);
     }
     
-    @PostMapping("/testing")
-    public ResponseEntity<?> upload(
-    	    @RequestParam("driveNumber") int driveNumber,
-    	    @RequestParam("file") MultipartFile file
-    	) {
-    	    System.out.println("drive: " + driveNumber);
-    	    System.out.println("file: " + file.getOriginalFilename());
-    	    return ResponseEntity.ok("Received");
-    	}
+//    @PostMapping("/testing")
+//    public ResponseEntity<?> upload(
+//    	    @RequestParam("driveNumber") int driveNumber,
+//    	    @RequestParam("file") MultipartFile file
+//    	) {
+//    	    System.out.println("drive: " + driveNumber);
+//    	    System.out.println("file: " + file.getOriginalFilename());
+//    	    return ResponseEntity.ok("Received");
+//    	}
 }
