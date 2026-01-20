@@ -3,6 +3,7 @@ package com.praveen.controller;
 
 import com.praveen.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -14,9 +15,14 @@ public class StudentController {
     private StudentService studentService;
 
     @PostMapping("/upload")
-    public String uploadStudents(@RequestParam Long driveId,
-                                 @RequestParam("file") MultipartFile file) {
-        studentService.uploadStudentsForDrive(driveId, file);
-        return "Students uploaded successfully";
+    public ResponseEntity<?> uploadStudents(@RequestParam Long driveId,
+                                            @RequestParam("file") MultipartFile file) {
+        try {
+            studentService.uploadStudentsForDrive(driveId, file);
+            return ResponseEntity.ok("Students uploaded successfully");
+        } catch (Exception e) {
+            return ResponseEntity.status(400).body("Upload failed: " + e.getMessage());
+        }
     }
+
 }

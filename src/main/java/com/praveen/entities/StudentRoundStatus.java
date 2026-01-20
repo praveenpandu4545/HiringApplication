@@ -1,4 +1,6 @@
 package com.praveen.entities;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -20,6 +22,7 @@ public class StudentRoundStatus {
 
     private String status; // PENDING / PASSED / FAILED
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "student_id")
     private Student student;

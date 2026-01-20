@@ -21,14 +21,5 @@ public class DriveController {
         Drive savedDrive = driveService.createDrive(request);
         return ResponseEntity.ok(savedDrive);
     }
-    
-//    @PostMapping("/testing")
-//    public ResponseEntity<?> upload(
-//    	    @RequestParam("driveNumber") int driveNumber,
-//    	    @RequestParam("file") MultipartFile file
-//    	) {
-//    	    System.out.println("drive: " + driveNumber);
-//    	    System.out.println("file: " + file.getOriginalFilename());
-//    	    return ResponseEntity.ok("Received");
-//    	}
+ 
 }
