@@ -48,6 +48,16 @@ public class DriveServiceImpl implements DriveService {
 		}
 		return driveResponses;
 	}
+
+	@Override
+	public DriveResponse getDriveById(Long driveId) {
+	    Drive drive = driveRepository.findById(driveId)
+	            .orElseThrow(() -> new RuntimeException("Drive not found"));
+	    return mapDriveToDriveResponse(drive);
+	}
+	
+	
+	// *****************************   HELPER FUNCTIONS   *****************************************
 	
 	private DriveResponse mapDriveToDriveResponse(Drive drive) {
 		DriveResponse dr = new DriveResponse();
@@ -65,12 +75,5 @@ public class DriveServiceImpl implements DriveService {
 		}
 		dr.setRounds(rr);
 		return dr;
-	}
-
-	@Override
-	public DriveResponse getDriveById(Long driveId) {
-	    Drive drive = driveRepository.findById(driveId)
-	            .orElseThrow(() -> new RuntimeException("Drive not found"));
-	    return mapDriveToDriveResponse(drive);
 	}
 }

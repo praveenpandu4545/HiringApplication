@@ -21,9 +21,14 @@ public class DriveController {
     private DriveService driveService;
 
     @PostMapping("/CreateDrive")
-    public ResponseEntity<Drive> createDrive(@RequestBody CreateDriveRequest request) {
+    public ResponseEntity<?> createDrive(@RequestBody CreateDriveRequest request) {
         Drive savedDrive = driveService.createDrive(request);
-        return ResponseEntity.ok(savedDrive);
+        try {
+    		return ResponseEntity.ok(savedDrive);
+    	}
+    	catch(Exception e) {
+    		return ResponseEntity.status(400).body("Fetching all drives failed due to " + e.getMessage());
+    	}
     }
     
     @GetMapping("/getAll")
