@@ -1,5 +1,4 @@
 package com.praveen.dto;
-import java.util.List;
 import lombok.*;
 
 @Getter
@@ -8,10 +7,10 @@ import lombok.*;
 @AllArgsConstructor
 
 public class StudentResponse {
+	private Long id;
     private String studentId;
     private String name;
     private String department;
     private String phone;
-    private List<StudentRoundStatusResponse> statuses;
 }
 

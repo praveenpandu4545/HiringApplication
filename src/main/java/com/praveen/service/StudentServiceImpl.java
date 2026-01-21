@@ -1,5 +1,7 @@
 package com.praveen.service;
 
+import com.praveen.dto.StudentResponse;
+import com.praveen.dto.StudentRoundStatusResponse;
 import com.praveen.entities.*;
 import com.praveen.repository.*;
 import com.praveen.service.StudentService;
@@ -21,6 +23,9 @@ public class StudentServiceImpl implements StudentService {
 	
 	@Autowired
 	private StudentRoundStatusRepository studentRoundStatusRepository;
+	
+	@Autowired
+	private StudentRepository studentRepository;
 
 	@Transactional
     @Override
@@ -80,4 +85,36 @@ public class StudentServiceImpl implements StudentService {
         if (cell == null) return null;
         return cell.toString().trim();
     }
+
+	@Override
+	public List<StudentResponse> getAllStudentsByDriveId(Long driveId) {
+		Drive drive = driveRepository.findById(driveId)
+                .orElseThrow(() -> new RuntimeException("Drive not found"));
+		List<StudentResponse> studentResponses = new ArrayList<>();
+		for(Student student : drive.getStudents()) {
+			StudentResponse sr = new StudentResponse();
+			sr.setDepartment(student.getDepartment());
+			sr.setName(student.getName());
+			sr.setPhone(student.getPhone());
+			sr.setStudentId(student.getStudentId());
+			sr.setId(student.getId());
+			studentResponses.add(sr);
+		}
+		
+		return studentResponses;
+	}
+
+	@Override
+	public List<StudentRoundStatusResponse> getAllRoundsByStudentId(Long studentId) {
+		Student student = studentRepository.findById(studentId).orElseThrow(() -> new RuntimeException("Student not found"));
+		List<StudentRoundStatusResponse> response = new ArrayList<>();
+		for(StudentRoundStatus srs : student.getRoundStatuses()) {
+			StudentRoundStatusResponse srsr = new StudentRoundStatusResponse();
+			srsr.setRoundName(srs.getRoundName());
+			srsr.setRoundNumber(srs.getRoundNumber());
+			srsr.setStatus(srs.getStatus());
+			response.add(srsr);
+		}
+		return response;
+	}
 }
