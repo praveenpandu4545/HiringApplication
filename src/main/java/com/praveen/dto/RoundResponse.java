@@ -7,6 +7,7 @@ import lombok.*;
 @AllArgsConstructor
 
 public class RoundResponse {
+	private Long id;
     private int roundNumber;
     private String roundName;
 }
