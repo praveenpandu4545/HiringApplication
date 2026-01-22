@@ -3,6 +3,7 @@ package com.praveen.controller;
 
 import com.praveen.dto.StudentResponse;
 import com.praveen.dto.StudentRoundStatusResponse;
+import com.praveen.entities.Drive;
 import com.praveen.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -33,8 +34,9 @@ public class StudentController {
     // TO GET ALL THE STUDENTS IN A DRIVE
     @GetMapping("/getAll/{driveId}")
     public ResponseEntity<?> getAllStudentsByDrive(@PathVariable Long driveId){
-    	List<StudentResponse> studentResponses = studentService.getAllStudentsByDriveId(driveId);
+    	
     	try {
+    		List<StudentResponse> studentResponses = studentService.getAllStudentsByDriveId(driveId);
     		return ResponseEntity.ok(studentResponses);
     	}
     	catch(Exception e) {
@@ -42,16 +44,29 @@ public class StudentController {
     	}
     }
     
-    // TO GET ALL THE ROUNDS OF A STUDENT 
+    // TO GET ALL THE ROUNDS OF A STUDENT USING DRIVE ID AS WELL
     
-    @GetMapping("/getAllRounds/{studentId}")
-    public ResponseEntity<?> getAllRoundsByStudent(@PathVariable Long studentId){
-    	List<StudentRoundStatusResponse> srsr = studentService.getAllRoundsByStudentId(studentId);
+    @GetMapping("/getAllRounds/{studentId}/driveId/{driveId}")
+    public ResponseEntity<?> getAllRoundsByStudent(@PathVariable Long studentId, @PathVariable Long driveId){
     	try {
+    		List<StudentRoundStatusResponse> srsr = studentService.getAllRoundsByStudentIdAndDriveId(studentId,driveId);
     		return ResponseEntity.ok(srsr);
     	}
     	catch(Exception e) {
     		return ResponseEntity.status(400).body("Unable to fetch students due to " + e.getMessage());
     	}
     } 
+    
+    // TO GET A DRIVE USING STUDENT_ID
+    
+    @GetMapping("/getDrives/{studentId}")
+    public ResponseEntity<?> getDrivesByStudentId(@PathVariable Long studentId){
+    	try {
+    		Drive drive = studentService.getDrivesByStudentId(studentId);
+    		return ResponseEntity.ok(drive);
+    	}
+    	catch(Exception e) {
+    		return ResponseEntity.status(400).body("Fetching Drives Failed Due to " + e.getMessage());
+    	}
+    }
 }

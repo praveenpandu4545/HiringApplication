@@ -47,8 +47,10 @@ public class StudentServiceImpl implements StudentService {
             	srs.setRoundName(r.getRoundName());
             	srs.setStatus("PENDING");
             	srs.setStudent(s);
+            	srs.setDrive(drive);
 //            	studentRoundStatusRepository.save(srs); // automatically gets saved when drive is getting saved below.
             	s.getRoundStatuses().add(srs);
+            	drive.getStudentRoundStatuses().add(srs);
             }
         }
 
@@ -107,10 +109,11 @@ public class StudentServiceImpl implements StudentService {
 	}
 
 	@Override
-	public List<StudentRoundStatusResponse> getAllRoundsByStudentId(Long studentId) {
+	public List<StudentRoundStatusResponse> getAllRoundsByStudentIdAndDriveId(Long studentId, Long driveId) {
 		Student student = studentRepository.findById(studentId).orElseThrow(() -> new RuntimeException("Student not found"));
 		List<StudentRoundStatusResponse> response = new ArrayList<>();
 		for(StudentRoundStatus srs : student.getRoundStatuses()) {
+			if (!srs.getDrive().getId().equals(driveId)) continue;
 			StudentRoundStatusResponse srsr = new StudentRoundStatusResponse();
 			srsr.setRoundName(srs.getRoundName());
 			srsr.setRoundNumber(srs.getRoundNumber());
@@ -119,5 +122,12 @@ public class StudentServiceImpl implements StudentService {
 			response.add(srsr);
 		}
 		return response;
+	}
+
+	@Override
+	public Drive getDrivesByStudentId(Long studentId) {
+		Student student = studentRepository.findById(studentId).orElseThrow(()-> new RuntimeException("Student not found"));
+		Drive drive = student.getDrive();
+		return drive;
 	}
 }

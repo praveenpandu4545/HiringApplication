@@ -22,8 +22,8 @@ public class DriveController {
 
     @PostMapping("/CreateDrive")
     public ResponseEntity<?> createDrive(@RequestBody CreateDriveRequest request) {
-        Drive savedDrive = driveService.createDrive(request);
         try {
+        	Drive savedDrive = driveService.createDrive(request);
     		return ResponseEntity.ok(savedDrive);
     	}
     	catch(Exception e) {
@@ -33,8 +33,8 @@ public class DriveController {
     
     @GetMapping("/getAll")
     public ResponseEntity<?> getAllDrives(){
-    	List<DriveResponse> drives = driveService.getAllDrives();
     	try {
+    		List<DriveResponse> drives = driveService.getAllDrives();
     		return ResponseEntity.ok(drives);
     	}
     	catch(Exception e) {
@@ -44,8 +44,8 @@ public class DriveController {
  
     @GetMapping("/{driveId}")
     public ResponseEntity<?> getDrive(@PathVariable Long driveId){
-    	DriveResponse dr= driveService.getDriveById(driveId);
     	try {
+    		DriveResponse dr= driveService.getDriveById(driveId);
     		return ResponseEntity.ok(dr);
     	}
     	catch(Exception e) {

@@ -16,15 +16,19 @@ public class StudentRoundStatus {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private int roundNumber;
     private String roundName;
-
-    private String status; // PENDING / PASSED / FAILED
-
+    private String status; 
+    
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "student_id")
     private Student student;
+    
+    
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "drive_id")
+    private Drive drive;
 }
 
