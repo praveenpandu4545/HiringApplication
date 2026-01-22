@@ -21,6 +21,7 @@ public class Student {
     private String name;
     private String department;
     private String phone;
+    private String email;
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)

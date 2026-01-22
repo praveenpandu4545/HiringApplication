@@ -6,6 +6,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor	
 public class StudentRoundStatusResponse {
+	private Long id;
 	private String roundName;
     private int roundNumber;
     private String status;  // PENDING / PASSED / FAILED

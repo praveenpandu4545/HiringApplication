@@ -45,7 +45,7 @@ public class StudentServiceImpl implements StudentService {
             	StudentRoundStatus srs = new StudentRoundStatus();
             	srs.setRoundNumber(r.getRoundNumber());
             	srs.setRoundName(r.getRoundName());
-            	srs.setStatus("Pending");
+            	srs.setStatus("PENDING");
             	srs.setStudent(s);
 //            	studentRoundStatusRepository.save(srs); // automatically gets saved when drive is getting saved below.
             	s.getRoundStatuses().add(srs);
@@ -70,6 +70,7 @@ public class StudentServiceImpl implements StudentService {
                 student.setName(getString(row.getCell(1)));
                 student.setDepartment(getString(row.getCell(2)));
                 student.setPhone(getString(row.getCell(3)));
+                student.setEmail(getString(row.getCell(4)));
 
                 students.add(student);
             }
@@ -98,6 +99,7 @@ public class StudentServiceImpl implements StudentService {
 			sr.setPhone(student.getPhone());
 			sr.setStudentId(student.getStudentId());
 			sr.setId(student.getId());
+			sr.setEmail(student.getEmail());
 			studentResponses.add(sr);
 		}
 		
@@ -113,6 +115,7 @@ public class StudentServiceImpl implements StudentService {
 			srsr.setRoundName(srs.getRoundName());
 			srsr.setRoundNumber(srs.getRoundNumber());
 			srsr.setStatus(srs.getStatus());
+			srsr.setId(srs.getId());
 			response.add(srsr);
 		}
 		return response;
