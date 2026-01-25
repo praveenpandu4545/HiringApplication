@@ -1,6 +1,7 @@
 
 package com.praveen.controller;
 
+import com.praveen.dto.DriveResponse;
 import com.praveen.dto.StudentResponse;
 import com.praveen.dto.StudentRoundStatusResponse;
 import com.praveen.entities.Drive;
@@ -62,8 +63,8 @@ public class StudentController {
     @GetMapping("/getDrives/{studentId}")
     public ResponseEntity<?> getDrivesByStudentId(@PathVariable Long studentId){
     	try {
-    		Drive drive = studentService.getDrivesByStudentId(studentId);
-    		return ResponseEntity.ok(drive);
+    		List<DriveResponse> drives = studentService.getDrivesByStudentId(studentId);
+    		return ResponseEntity.ok(drives);
     	}
     	catch(Exception e) {
     		return ResponseEntity.status(400).body("Fetching Drives Failed Due to " + e.getMessage());

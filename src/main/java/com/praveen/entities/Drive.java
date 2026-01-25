@@ -21,9 +21,12 @@ public class Drive {
 	@OneToMany(mappedBy = "drive", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Round> rounds = new ArrayList<>();
 	
-	@OneToMany(mappedBy = "drive", cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<Student> students = new ArrayList<>();
+	@OneToMany(mappedBy = "drive",cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<StudentDrive> studentDrives = new ArrayList<>();
 	
-	@OneToMany(mappedBy = "drive", cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<StudentRoundStatus> studentRoundStatuses = new ArrayList<>();
+//	@OneToMany(mappedBy = "drive", cascade = CascadeType.ALL, orphanRemoval = true)
+//	private List<Student> students = new ArrayList<>();
+//	
+//	@OneToMany(mappedBy = "drive", cascade = CascadeType.ALL, orphanRemoval = true)
+//	private List<StudentRoundStatus> studentRoundStatuses = new ArrayList<>();
 }

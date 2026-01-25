@@ -1,5 +1,7 @@
 package com.praveen.service;
 
+import com.praveen.dto.DriveResponse;
+import com.praveen.dto.RoundResponse;
 import com.praveen.dto.StudentResponse;
 import com.praveen.dto.StudentRoundStatusResponse;
 import com.praveen.entities.*;
@@ -28,34 +30,57 @@ public class StudentServiceImpl implements StudentService {
 	private StudentRepository studentRepository;
 
 	@Transactional
-    @Override
-    public void uploadStudentsForDrive(Long driveId, MultipartFile file) {
+	@Override
+	public void uploadStudentsForDrive(Long driveId, MultipartFile file) {
 
-        Drive drive = driveRepository.findById(driveId)
-                .orElseThrow(() -> new RuntimeException("Drive not found"));
+	    Drive drive = driveRepository.findById(driveId)
+	            .orElseThrow(() -> new RuntimeException("Drive not found"));
 
-        List<Student> parsedStudents = parseExcel(file);
+	    List<Student> parsedStudents = parseExcel(file);
 
-        for (Student s : parsedStudents) {
-            s.setDrive(drive);                 // owning side
-            drive.getStudents().add(s);        // inverse side
-            
-            List<Round> rounds = drive.getRounds();
-            for(Round r : rounds) {
-            	StudentRoundStatus srs = new StudentRoundStatus();
-            	srs.setRoundNumber(r.getRoundNumber());
-            	srs.setRoundName(r.getRoundName());
-            	srs.setStatus("PENDING");
-            	srs.setStudent(s);
-            	srs.setDrive(drive);
-//            	studentRoundStatusRepository.save(srs); // automatically gets saved when drive is getting saved below.
-            	s.getRoundStatuses().add(srs);
-            	drive.getStudentRoundStatuses().add(srs);
-            }
-        }
+	    for (Student parsedStudent : parsedStudents) {
 
-        driveRepository.save(drive);           // cascade inserts students
-    }
+	        String regNo = parsedStudent.getStudentId();
+
+	        Student student = studentRepository
+	                .findByStudentId(regNo)
+	                .orElse(null);
+
+	        if (student == null) {
+	            student = studentRepository.save(parsedStudent);
+	        }
+
+	        boolean alreadyRegistered = student.getStudentDrives()
+	                .stream()
+	                .anyMatch(sd -> sd.getDrive().getId().equals(driveId));
+
+	        if (alreadyRegistered) {
+	            continue;
+	        }
+
+	        StudentDrive sd = new StudentDrive();
+	        sd.setDrive(drive);
+	        sd.setStudent(student);
+	        sd.setFinalStatus("IN PROGRESS");
+
+	        for (Round r : drive.getRounds()) {
+
+	            StudentRoundStatus srs = new StudentRoundStatus();
+	            srs.setRoundName(r.getRoundName());
+	            srs.setRoundNumber(r.getRoundNumber());
+	            srs.setStatus("PENDING");
+	            srs.setStudentDrive(sd);
+
+	            sd.getStudentRoundStatuses().add(srs);
+	        }
+
+	        drive.getStudentDrives().add(sd);
+	        student.getStudentDrives().add(sd);
+	    }
+
+	    driveRepository.save(drive);
+	}
+
 
     private List<Student> parseExcel(MultipartFile file) {
         List<Student> students = new ArrayList<>();
@@ -94,14 +119,14 @@ public class StudentServiceImpl implements StudentService {
 		Drive drive = driveRepository.findById(driveId)
                 .orElseThrow(() -> new RuntimeException("Drive not found"));
 		List<StudentResponse> studentResponses = new ArrayList<>();
-		for(Student student : drive.getStudents()) {
+		for(StudentDrive studentDrive : drive.getStudentDrives()) {
 			StudentResponse sr = new StudentResponse();
-			sr.setDepartment(student.getDepartment());
-			sr.setName(student.getName());
-			sr.setPhone(student.getPhone());
-			sr.setStudentId(student.getStudentId());
-			sr.setId(student.getId());
-			sr.setEmail(student.getEmail());
+			sr.setDepartment(studentDrive.getStudent().getDepartment());
+			sr.setName(studentDrive.getStudent().getName());
+			sr.setPhone(studentDrive.getStudent().getPhone());
+			sr.setStudentId(studentDrive.getStudent().getStudentId());
+			sr.setId(studentDrive.getStudent().getId());
+			sr.setEmail(studentDrive.getStudent().getEmail());
 			studentResponses.add(sr);
 		}
 		
@@ -109,25 +134,73 @@ public class StudentServiceImpl implements StudentService {
 	}
 
 	@Override
-	public List<StudentRoundStatusResponse> getAllRoundsByStudentIdAndDriveId(Long studentId, Long driveId) {
-		Student student = studentRepository.findById(studentId).orElseThrow(() -> new RuntimeException("Student not found"));
-		List<StudentRoundStatusResponse> response = new ArrayList<>();
-		for(StudentRoundStatus srs : student.getRoundStatuses()) {
-			if (!srs.getDrive().getId().equals(driveId)) continue;
-			StudentRoundStatusResponse srsr = new StudentRoundStatusResponse();
-			srsr.setRoundName(srs.getRoundName());
-			srsr.setRoundNumber(srs.getRoundNumber());
-			srsr.setStatus(srs.getStatus());
-			srsr.setId(srs.getId());
-			response.add(srsr);
-		}
-		return response;
+	public List<StudentRoundStatusResponse> 
+	getAllRoundsByStudentIdAndDriveId(Long studentId, Long driveId) {
+
+	    Student student = studentRepository.findById(studentId)
+	            .orElseThrow(() -> new RuntimeException("Student not found"));
+
+	    List<StudentRoundStatusResponse> response = new ArrayList<>();
+
+	    for (StudentDrive studentDrive : student.getStudentDrives()) {
+
+	        // Filter only for requested drive
+	        if (!studentDrive.getDrive().getId().equals(driveId)) {
+	            continue;
+	        }
+
+	        for (StudentRoundStatus srs : studentDrive.getStudentRoundStatuses()) {
+
+	            StudentRoundStatusResponse srsr = new StudentRoundStatusResponse();
+	            srsr.setId(srs.getId());
+	            srsr.setRoundName(srs.getRoundName());
+	            srsr.setRoundNumber(srs.getRoundNumber());
+	            srsr.setStatus(srs.getStatus());
+
+	            response.add(srsr);
+	        }
+	    }
+
+	    return response;
 	}
 
+
 	@Override
-	public Drive getDrivesByStudentId(Long studentId) {
-		Student student = studentRepository.findById(studentId).orElseThrow(()-> new RuntimeException("Student not found"));
-		Drive drive = student.getDrive();
-		return drive;
+	@Transactional
+	public List<DriveResponse> getDrivesByStudentId(Long studentId) {
+
+	    Student student = studentRepository.findById(studentId)
+	            .orElseThrow(() -> new RuntimeException("Student not found"));
+
+	    List<DriveResponse> responseList = new ArrayList<>();
+
+	    for (StudentDrive sd : student.getStudentDrives()) {
+
+	        Drive drive = sd.getDrive();
+
+	        DriveResponse driveResponse = new DriveResponse();
+	        driveResponse.setId(drive.getId());
+	        driveResponse.setCollegeName(drive.getCollegeName());
+	        driveResponse.setDriveName(drive.getDriveName());
+	        driveResponse.setNoOfRounds(drive.getNoOfRounds());
+
+	        // 🔹 Map rounds
+	        List<RoundResponse> roundResponses = new ArrayList<>();
+
+	        for (Round round : drive.getRounds()) {
+	            RoundResponse rr = new RoundResponse();
+	            rr.setId(round.getId());
+	            rr.setRoundNumber(round.getRoundNumber());
+	            rr.setRoundName(round.getRoundName());
+	            roundResponses.add(rr);
+	        }
+
+	        driveResponse.setRounds(roundResponses);
+
+	        responseList.add(driveResponse);
+	    }
+
+	    return responseList;
 	}
+
 }

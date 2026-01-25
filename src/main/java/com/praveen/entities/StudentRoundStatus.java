@@ -22,13 +22,8 @@ public class StudentRoundStatus {
     
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "student_id")
-    private Student student;
-    
-    
-    @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "drive_id")
-    private Drive drive;
+    @JoinColumn(name = "student_drive_id")
+    private StudentDrive studentDrive;
+
 }
 

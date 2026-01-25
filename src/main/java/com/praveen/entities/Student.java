@@ -17,17 +17,13 @@ public class Student {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(unique = true, nullable = false)
     private String studentId;
     private String name;
     private String department;
     private String phone;
     private String email;
 
-    @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "drive_id")	
-    private Drive drive;
-
-    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<StudentRoundStatus> roundStatuses = new ArrayList<>();
+    @OneToMany(mappedBy = "student", orphanRemoval = true)
+    private List<StudentDrive> studentDrives = new ArrayList<>();
 }
