@@ -18,6 +18,8 @@ public class Drive {
 	private String collegeName;
 	private int noOfRounds;
 	
+	private List<String> requiredSkills = new ArrayList<>();
+	
 	@OneToMany(mappedBy = "drive", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Round> rounds = new ArrayList<>();
 	

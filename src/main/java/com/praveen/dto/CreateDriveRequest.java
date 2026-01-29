@@ -13,5 +13,6 @@ public class CreateDriveRequest {
     private String driveName;
     private int noOfRounds;
     private List<RoundRequest> rounds;
+    private List<String> requiredSkills;
 }
 

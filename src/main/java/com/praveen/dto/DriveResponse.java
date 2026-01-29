@@ -13,5 +13,6 @@ public class DriveResponse {
     private String driveName;
     private int noOfRounds;
     private List<RoundResponse> rounds;
+    private List<String> requiredSkills;
 }
 

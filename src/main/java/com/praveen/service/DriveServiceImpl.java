@@ -23,6 +23,7 @@ public class DriveServiceImpl implements DriveService {
         drive.setCollegeName(request.getCollegeName());
         drive.setDriveName(request.getDriveName());
         drive.setNoOfRounds(request.getNoOfRounds());
+        drive.setRequiredSkills(request.getRequiredSkills());
 
         List<Round> roundEntities = new ArrayList<>();
 
@@ -65,6 +66,7 @@ public class DriveServiceImpl implements DriveService {
 		dr.setDriveName(drive.getDriveName());
 		dr.setId(drive.getId());
 		dr.setNoOfRounds(drive.getNoOfRounds());
+		dr.setRequiredSkills(drive.getRequiredSkills());
 		List<RoundResponse> rr = new ArrayList<>();
 		for (Round r : drive.getRounds()) {
 			RoundResponse R = new RoundResponse();
