@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import com.praveen.dto.ChangePasswordRequest;
 import com.praveen.dto.DriveResponse;
 import com.praveen.dto.StudentResponse;
 import com.praveen.dto.StudentRoundStatusResponse;
@@ -14,5 +15,5 @@ public interface StudentService {
 	List<StudentResponse> getAllStudentsByDriveId(Long driveId);
 	List<StudentRoundStatusResponse> getAllRoundsByStudentIdAndDriveId(Long studentId, Long driveid);
 	List<DriveResponse> getDrivesByStudentId(Long studentId);
-	
+	String updatePassword(ChangePasswordRequest request);
 }

@@ -10,6 +10,7 @@ import lombok.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 @Entity
 @Table(name = "students")
 public class Student {
@@ -23,6 +24,7 @@ public class Student {
     private String department;
     private String phone;
     private String email;
+    private String password;
 
     @OneToMany(mappedBy = "student", orphanRemoval = true)
     private List<StudentDrive> studentDrives = new ArrayList<>();

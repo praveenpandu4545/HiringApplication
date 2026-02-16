@@ -1,6 +1,7 @@
 
 package com.praveen.controller;
 
+import com.praveen.dto.ChangePasswordRequest;
 import com.praveen.dto.DriveResponse;
 import com.praveen.dto.StudentResponse;
 import com.praveen.dto.StudentRoundStatusResponse;
@@ -68,6 +69,17 @@ public class StudentController {
     	}
     	catch(Exception e) {
     		return ResponseEntity.status(400).body("Fetching Drives Failed Due to " + e.getMessage());
+    	}
+    }
+    
+    @PatchMapping("/changePassword")
+    public ResponseEntity<String> changePasswordByStudentId(@RequestBody ChangePasswordRequest request){
+    	try {
+    		String response = studentService.updatePassword(request);
+    		return ResponseEntity.ok(response);
+    	}
+    	catch(Exception e) {
+    		return ResponseEntity.status(400).body("Unable to update the password due to " + e.getMessage());
     	}
     }
 }

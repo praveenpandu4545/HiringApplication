@@ -1,5 +1,6 @@
 package com.praveen.service;
 
+import com.praveen.dto.ChangePasswordRequest;
 import com.praveen.dto.DriveResponse;
 import com.praveen.dto.RoundResponse;
 import com.praveen.dto.StudentResponse;
@@ -7,15 +8,13 @@ import com.praveen.dto.StudentRoundStatusResponse;
 import com.praveen.entities.*;
 import com.praveen.repository.*;
 import com.praveen.service.StudentService;
-
 import jakarta.transaction.Transactional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.apache.poi.ss.usermodel.*;
-
 import java.util.*;
+import com.praveen.util.*;
 
 @Service
 public class StudentServiceImpl implements StudentService {
@@ -81,7 +80,9 @@ public class StudentServiceImpl implements StudentService {
 	    driveRepository.save(drive);
 	}
 
-
+	// WE ARE STORING THE PASSWORD AS RAW PASSWORD, AFTER FINISHING THE SETUP OF SENDING EMAILS, CHANGE THE RAWPASSWORD INTO ECRYPTED ONE AND THEN STORE IN DB  
+	
+	
     private List<Student> parseExcel(MultipartFile file) {
         List<Student> students = new ArrayList<>();
 
@@ -93,11 +94,14 @@ public class StudentServiceImpl implements StudentService {
                 if (row == null) continue;
 
                 Student student = new Student();
-                student.setStudentId(getString(row.getCell(0)));
+                student.setStudentId(getString(row.getCell(0)).toUpperCase());
                 student.setName(getString(row.getCell(1)));
                 student.setDepartment(getString(row.getCell(2)));
                 student.setPhone(getString(row.getCell(3)));
                 student.setEmail(getString(row.getCell(4)));
+                
+                String rawPassword = PasswordGenerator.generatePassword(10);
+                student.setPassword(rawPassword);
 
                 students.add(student);
             }
@@ -110,9 +114,31 @@ public class StudentServiceImpl implements StudentService {
     }
 
     private String getString(Cell cell) {
-        if (cell == null) return null;
-        return cell.toString().trim();
+
+        if (cell == null) {
+            return "";
+        }
+
+        switch (cell.getCellType()) {
+
+            case STRING:
+                return cell.getStringCellValue().trim();
+
+            case NUMERIC:
+                if (DateUtil.isCellDateFormatted(cell)) {
+                    return cell.getDateCellValue().toString();
+                }
+                // Convert numeric to long to remove scientific notation
+                return String.valueOf((long) cell.getNumericCellValue());
+
+            case BOOLEAN:
+                return String.valueOf(cell.getBooleanCellValue());
+
+            default:
+                return cell.toString().trim();
+        }
     }
+
 
 	@Override
 	public List<StudentResponse> getAllStudentsByDriveId(Long driveId) {
@@ -201,6 +227,24 @@ public class StudentServiceImpl implements StudentService {
 	    }
 
 	    return responseList;
+	}
+
+	@Override
+	public String updatePassword(ChangePasswordRequest request) {
+		try {
+			String newPassword = request.getPassword();
+			if(newPassword.length() < 10) {
+				throw new IllegalArgumentException("Password must be at least 10 characters long");
+			}
+			String studentId = request.getStudentId();
+			Student student = studentRepository.findByStudentId(studentId).orElseThrow(() -> new RuntimeException("Student not found"));
+			student.setPassword(newPassword);
+			studentRepository.save(student);
+			return "Password got updated successfully";
+		}
+		catch(Exception e) {
+			return "Password update got failed due to " + e.getMessage();
+		}
 	}
 
 }
