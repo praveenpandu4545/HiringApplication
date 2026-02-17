@@ -1,5 +1,8 @@
 package com.praveen.entities;
 import java.util.*;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -24,6 +27,11 @@ public class Drive {
 	private List<Round> rounds = new ArrayList<>();
 	
 	@OneToMany(mappedBy = "drive",cascade = CascadeType.ALL, orphanRemoval = true)
+	@JsonIgnore
     private List<StudentDrive> studentDrives = new ArrayList<>();
+	
+	@OneToMany(mappedBy = "drive", cascade = CascadeType.ALL, orphanRemoval = true)
+	@JsonIgnore
+	private List<CollegeDrive> collegeDrives = new ArrayList<>();
 	
 }

@@ -2,6 +2,9 @@ package com.praveen.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import com.praveen.repository.CollegeDriveRepository;
+import com.praveen.repository.CollegeRepository;
 import com.praveen.repository.DriveRepository;
 import com.praveen.dto.CreateDriveRequest;
 import com.praveen.dto.DriveResponse;
@@ -15,6 +18,12 @@ public class DriveServiceImpl implements DriveService {
 
     @Autowired
     private DriveRepository driveRepository;
+    
+    @Autowired
+    private CollegeDriveRepository collegeDriveRepository; 
+    
+    @Autowired
+    private CollegeRepository collegeRepository;
 
     @Override
     public Drive createDrive(CreateDriveRequest request) {
@@ -36,7 +45,20 @@ public class DriveServiceImpl implements DriveService {
         }
 
         drive.setRounds(roundEntities);
+        
+        College college = collegeRepository.findByCollegeName(request.getCollegeName())
+        		.orElseThrow(() -> new RuntimeException("College not found"));
+        
+        CollegeDrive collegeDrive = new CollegeDrive();
+        collegeDrive.setCollege(college);
+        collegeDrive.setDrive(drive);
 
+        drive.getCollegeDrives().add(collegeDrive);
+        college.getCollegeDrives().add(collegeDrive);
+        
+//        collegeRepository.save(college);                   THESE ARE AUTOMATICALLY GETS SAVED DUE TO CASCADING...  
+//        collegeDriveRepository.save(collegeDrive);
+        
         return driveRepository.save(drive);
     }
 

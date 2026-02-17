@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 
 import com.praveen.entities.College;
+import com.praveen.entities.Drive;
 import com.praveen.service.CollegeService;
 
 @RestController
@@ -44,6 +45,18 @@ public class CollegeController {
 		catch(Exception e) {
 			return ResponseEntity.badRequest()
 	                .body("Fetching Colleges Failed Due To " + e.getMessage());
+		}
+	}
+	
+	@GetMapping("/getDrivesByClgName/{clgName}")
+	public ResponseEntity<?> getDrivesByName(@PathVariable String clgName){
+		try {
+			List<Drive> list = collegeService.getDrivesByName(clgName);
+			return ResponseEntity.ok(list);
+		}
+		catch(Exception e) {
+			return ResponseEntity.badRequest()
+	                .body("Fetching drives Failed Due To " + e.getMessage());
 		}
 	}
 }

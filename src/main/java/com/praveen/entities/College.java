@@ -1,5 +1,8 @@
 package com.praveen.entities;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -11,8 +14,18 @@ import lombok.*;
 @Entity
 @Table(name = "college")
 public class College {
+	
+	public College(String collegeName) {
+		this.collegeName = collegeName;
+	}
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	private String collegeName;
+	
+	@OneToMany(mappedBy = "college", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<CollegeDrive> collegeDrives = new ArrayList<>();
+	
+
 }

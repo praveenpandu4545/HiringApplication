@@ -27,7 +27,7 @@ public class DriveController {
     		return ResponseEntity.ok(savedDrive);
     	}
     	catch(Exception e) {
-    		return ResponseEntity.status(400).body("Fetching all drives failed due to " + e.getMessage());
+    		return ResponseEntity.status(400).body("Creating drive failed due to " + e.getMessage());
     	}
     }
     
