@@ -28,4 +28,8 @@ public class Student {
 
     @OneToMany(mappedBy = "student", orphanRemoval = true)
     private List<StudentDrive> studentDrives = new ArrayList<>();
+    
+    @OneToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 }
