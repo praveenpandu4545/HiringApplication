@@ -1,34 +1,25 @@
 package com.praveen.entities;
-import java.util.*;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.*;
 import lombok.*;
 
+@Entity
+@Table(name = "employees")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
-@Entity
-@Table(name = "students")
-public class Student {
+public class Employee {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(unique = true, nullable = false)
-    private String studentId;
+
     private String name;
     private String department;
     private String phone;
     private String email;
-//    private String password;
 
-    @OneToMany(mappedBy = "student", orphanRemoval = true)
-    private List<StudentDrive> studentDrives = new ArrayList<>();
-    
     @OneToOne
     @JoinColumn(name = "user_id")
     private User user;

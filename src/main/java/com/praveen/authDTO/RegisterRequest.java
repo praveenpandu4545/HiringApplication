@@ -1,5 +1,5 @@
 
-package com.praveen.auth;
+package com.praveen.authDTO;
 
 import com.praveen.entities.Role;
 import lombok.Data;

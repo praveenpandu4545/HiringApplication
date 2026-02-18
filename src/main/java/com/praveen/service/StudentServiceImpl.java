@@ -10,6 +10,7 @@ import com.praveen.repository.*;
 import com.praveen.service.StudentService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.apache.poi.ss.usermodel.*;
@@ -27,6 +28,12 @@ public class StudentServiceImpl implements StudentService {
 	
 	@Autowired
 	private StudentRepository studentRepository;
+	
+	@Autowired
+	private UserRepository userRepository;
+	
+	@Autowired
+    private PasswordEncoder passwordEncoder;
 
 	@Transactional
 	@Override
@@ -48,6 +55,21 @@ public class StudentServiceImpl implements StudentService {
 	        if (student == null) {
 	            student = studentRepository.save(parsedStudent);
 	        }
+	        
+	        User user = userRepository.findByEmail(parsedStudent.getEmail()).orElse(null);
+	        if(user == null) {
+	        	user = new User();
+	        	user.setAccountStatus(AccountStatus.ACTIVE);
+	        	user.setEmail(parsedStudent.getEmail());
+	        	user.setRole(Role.STUDENT);
+	        	String rawPassword = PasswordGenerator.generatePassword(10);
+	        	System.out.println("password for email : " + parsedStudent.getEmail() + "is : " + rawPassword);
+	        	user.setPassword(passwordEncoder.encode(rawPassword));
+	        	user = userRepository.save(user);
+	        }
+	        
+	        student.setUser(user);
+	        studentRepository.save(student);
 
 	        boolean alreadyRegistered = student.getStudentDrives()
 	                .stream()
@@ -80,8 +102,6 @@ public class StudentServiceImpl implements StudentService {
 	    driveRepository.save(drive);
 	}
 
-	// WE ARE STORING THE PASSWORD AS RAW PASSWORD, AFTER FINISHING THE SETUP OF SENDING EMAILS, CHANGE THE RAWPASSWORD INTO ECRYPTED ONE AND THEN STORE IN DB  
-	
 	
     private List<Student> parseExcel(MultipartFile file) {
         List<Student> students = new ArrayList<>();
@@ -100,8 +120,8 @@ public class StudentServiceImpl implements StudentService {
                 student.setPhone(getString(row.getCell(3)));
                 student.setEmail(getString(row.getCell(4)));
                 
-                String rawPassword = PasswordGenerator.generatePassword(10);
-                student.setPassword(rawPassword);
+//                String rawPassword = PasswordGenerator.generatePassword(10);
+//                student.setPassword(rawPassword);
 
                 students.add(student);
             }
@@ -229,22 +249,22 @@ public class StudentServiceImpl implements StudentService {
 	    return responseList;
 	}
 
-	@Override
-	public String updatePassword(ChangePasswordRequest request) {
-		try {
-			String newPassword = request.getPassword();
-			if(newPassword.length() < 10) {
-				throw new IllegalArgumentException("Password must be at least 10 characters long");
-			}
-			String studentId = request.getStudentId();
-			Student student = studentRepository.findByStudentId(studentId).orElseThrow(() -> new RuntimeException("Student not found"));
-			student.setPassword(newPassword);
-			studentRepository.save(student);
-			return "Password got updated successfully";
-		}
-		catch(Exception e) {
-			return "Password update got failed due to " + e.getMessage();
-		}
-	}
+//	@Override
+//	public String updatePassword(ChangePasswordRequest request) {
+//		try {
+//			String newPassword = request.getPassword();
+//			if(newPassword.length() < 10) {
+//				throw new IllegalArgumentException("Password must be at least 10 characters long");
+//			}
+//			String studentId = request.getStudentId();
+//			Student student = studentRepository.findByStudentId(studentId).orElseThrow(() -> new RuntimeException("Student not found"));
+//			student.setPassword(newPassword);
+//			studentRepository.save(student);
+//			return "Password got updated successfully";
+//		}
+//		catch(Exception e) {
+//			return "Password update got failed due to " + e.getMessage();
+//		}
+//	}
 
 }

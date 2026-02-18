@@ -15,5 +15,5 @@ public interface StudentService {
 	List<StudentResponse> getAllStudentsByDriveId(Long driveId);
 	List<StudentRoundStatusResponse> getAllRoundsByStudentIdAndDriveId(Long studentId, Long driveid);
 	List<DriveResponse> getDrivesByStudentId(Long studentId);
-	String updatePassword(ChangePasswordRequest request);
+//	String updatePassword(ChangePasswordRequest request);
 }
