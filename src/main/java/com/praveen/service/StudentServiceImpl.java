@@ -34,6 +34,10 @@ public class StudentServiceImpl implements StudentService {
 	
 	@Autowired
     private PasswordEncoder passwordEncoder;
+	
+	@Autowired
+	private EmailUtil emailUtil;
+
 
 	@Transactional
 	@Override
@@ -66,6 +70,8 @@ public class StudentServiceImpl implements StudentService {
 	        	System.out.println("password for email : " + parsedStudent.getEmail() + "is : " + rawPassword);
 	        	user.setPassword(passwordEncoder.encode(rawPassword));
 	        	user = userRepository.save(user);
+	        	
+	        	emailUtil.sendRegistrationSuccess(parsedStudent.getEmail(), parsedStudent.getName(), rawPassword);
 	        }
 	        
 	        student.setUser(user);
@@ -97,6 +103,8 @@ public class StudentServiceImpl implements StudentService {
 
 	        drive.getStudentDrives().add(sd);
 	        student.getStudentDrives().add(sd);
+	        
+	        emailUtil.sendDriveRegistrationSuccess(parsedStudent.getEmail(), parsedStudent.getName(), drive.getDriveName());
 	    }
 
 	    driveRepository.save(drive);
