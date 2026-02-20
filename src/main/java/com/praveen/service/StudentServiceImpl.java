@@ -59,6 +59,12 @@ public class StudentServiceImpl implements StudentService {
 	        if (student == null) {
 	            student = studentRepository.save(parsedStudent);
 	        }
+	        else {
+	        	if(!student.getEmail().equals(parsedStudent.getEmail()) || !student.getStudentId().equals(parsedStudent.getStudentId())) {
+	        		System.out.println("Email mismatch for student ID: " + parsedStudent.getStudentId());
+	                continue;
+	        	}
+	        }
 	        
 	        User user = userRepository.findByEmail(parsedStudent.getEmail()).orElse(null);
 	        if(user == null) {

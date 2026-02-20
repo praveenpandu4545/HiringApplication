@@ -92,7 +92,7 @@ public class AuthController {
     }
     
     @PostMapping("/register/student")
-    public ResponseEntity<?> registerStudent(
+    public ResponseEntity<?> registerStudentManual(
             @RequestBody StudentRegisterRequest request) {
 
         // Check if email already exists
