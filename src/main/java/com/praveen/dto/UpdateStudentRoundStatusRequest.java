@@ -8,5 +8,5 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UpdateStudentRoundStatusRequest {
-    private String status; // PENDING / SELECTED / REJECTED
+    private String status; // IN PROGRESS / SELECTED / REJETCED
 }
