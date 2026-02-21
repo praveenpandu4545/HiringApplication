@@ -154,6 +154,7 @@ public class AuthController {
         employee.setDepartment(request.getDepartment());
         employee.setPhone(request.getPhone());
         employee.setUser(user);
+        employee.setEmail(request.getEmail());
        
 		employeeRepository.save(employee);
 

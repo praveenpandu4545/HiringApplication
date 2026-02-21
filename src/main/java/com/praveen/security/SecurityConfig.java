@@ -25,6 +25,7 @@ public class SecurityConfig {
             throws Exception {
 
         http
+            .cors(cors -> {})   // ✅ VERY IMPORTANT
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
                     .requestMatchers("/auth/**").permitAll()
@@ -36,7 +37,6 @@ public class SecurityConfig {
                     )
             );
 
-        // Add JWT filter before UsernamePasswordAuthenticationFilter
         http.addFilterBefore(
                 jwtAuthenticationFilter,
                 UsernamePasswordAuthenticationFilter.class
