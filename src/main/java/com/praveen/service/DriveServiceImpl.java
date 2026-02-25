@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.praveen.repository.CollegeDriveRepository;
 import com.praveen.repository.CollegeRepository;
 import com.praveen.repository.DriveRepository;
+import com.praveen.repository.StudentRepository;
 import com.praveen.dto.CreateDriveRequest;
 import com.praveen.dto.DriveResponse;
 import com.praveen.dto.RoundRequest;
@@ -18,6 +19,9 @@ public class DriveServiceImpl implements DriveService {
 
     @Autowired
     private DriveRepository driveRepository;
+    
+    @Autowired
+    private StudentRepository studentRepository;
     
     @Autowired
     private CollegeDriveRepository collegeDriveRepository; 
@@ -99,5 +103,17 @@ public class DriveServiceImpl implements DriveService {
 		}
 		dr.setRounds(rr);
 		return dr;
+	}
+
+	
+	@Override
+	public List<Drive> getDrivesForStudent(String email) {
+
+	    Student student = studentRepository.findByEmail(email)
+	            .orElseThrow(() -> new RuntimeException("Student not found"));
+
+	    String collegeName = student.getCollegeName();
+
+	    return driveRepository.findByCollegeName(collegeName);
 	}
 }

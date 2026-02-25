@@ -15,6 +15,7 @@ import com.praveen.repository.EmployeeRepository;
 import com.praveen.repository.StudentRepository;
 import com.praveen.repository.UserRepository;
 import com.praveen.security.JwtUtil;
+import com.praveen.util.EmailUtil;
 
 @RestController
 @RequestMapping("/auth")
@@ -37,6 +38,9 @@ public class AuthController {
     
     @Autowired
     private JwtUtil jwtUtil;
+    
+    @Autowired
+    private EmailUtil emailUtil;
 
 
     // REGISTER
@@ -124,8 +128,11 @@ public class AuthController {
         student.setPhone(request.getPhone());
         student.setEmail(request.getEmail());
         student.setUser(user);
+        student.setCollegeName(request.getCollegeName());
 
         studentRepository.save(student);
+        
+        emailUtil.sendManualRegistrationSuccess(request.getEmail(), request.getName());
 
         return ResponseEntity.ok("Student registered successfully");
     }
@@ -158,6 +165,8 @@ public class AuthController {
        
 		employeeRepository.save(employee);
 
+		emailUtil.sendManualRegistrationSuccess(request.getEmail(), request.getName());
+		
         return ResponseEntity.ok("Employee registered successfully");
     }
 

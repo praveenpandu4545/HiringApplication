@@ -29,6 +29,7 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
                     .requestMatchers("/auth/**").permitAll()
+                    .requestMatchers("/springApi/college/getAll").permitAll()
                     .anyRequest().authenticated()
             )
             .sessionManagement(session ->

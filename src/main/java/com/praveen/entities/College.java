@@ -22,6 +22,8 @@ public class College {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
+	
+	@Column(unique = true, nullable = false)
 	private String collegeName;
 	
 	@OneToMany(mappedBy = "college", cascade = CascadeType.ALL, orphanRemoval = true)

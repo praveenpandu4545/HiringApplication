@@ -10,5 +10,6 @@ public class StudentRegisterRequest {
     private String phone;
     private String email;
     private String password;
+    private String collegeName;
 }
 

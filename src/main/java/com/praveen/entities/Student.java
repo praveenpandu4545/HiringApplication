@@ -24,6 +24,7 @@ public class Student {
     private String name;
     private String department;
     private String phone;
+    private String collegeName;
     
     @Column(unique = true, nullable = false)
     private String email;
@@ -35,4 +36,12 @@ public class Student {
     @OneToOne
     @JoinColumn(name = "user_id")
     private User user;
+    
+ // ===== Resume Fields =====
+
+    @Lob
+    @Column(name = "resume", columnDefinition = "LONGBLOB")
+    private byte[] resume;
+    private String resumeName;
+    private String resumeType;
 }

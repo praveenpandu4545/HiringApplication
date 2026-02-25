@@ -13,5 +13,6 @@ public class StudentResponse {
     private String department;
     private String phone;
     private String email;
+    private String collegeName;
 }
 

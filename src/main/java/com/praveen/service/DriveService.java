@@ -8,4 +8,5 @@ public interface DriveService {
     Drive createDrive(CreateDriveRequest request);
     List<DriveResponse> getAllDrives();
 	DriveResponse getDriveById(Long driveId);
+	List<Drive> getDrivesForStudent(String email);
 }

@@ -45,10 +45,12 @@ public class StudentServiceImpl implements StudentService {
 
 	    Drive drive = driveRepository.findById(driveId)
 	            .orElseThrow(() -> new RuntimeException("Drive not found"));
-
+	    String collegeName = drive.getCollegeName();  
+	    
 	    List<Student> parsedStudents = parseExcel(file);
 
 	    for (Student parsedStudent : parsedStudents) {
+	    	parsedStudent.setCollegeName(collegeName);
 
 	        String regNo = parsedStudent.getStudentId();
 
@@ -261,6 +263,22 @@ public class StudentServiceImpl implements StudentService {
 	    }
 
 	    return responseList;
+	}
+
+
+	@Override
+	public StudentResponse getStudent(String studentEmail) {
+		Student student = studentRepository.findByEmail(studentEmail)
+				.orElseThrow(() -> new RuntimeException("Student not found"));
+		StudentResponse sr = new StudentResponse();
+		sr.setDepartment(student.getDepartment());
+		sr.setEmail(student.getEmail());
+		sr.setName(student.getName());
+		sr.setPhone(student.getPhone());
+		sr.setStudentId(student.getStudentId());
+		sr.setCollegeName(student.getCollegeName());
+		
+		return sr;
 	}
 
 //	@Override

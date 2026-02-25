@@ -5,13 +5,14 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.http.ResponseEntity;
 
 import java.util.*;
-
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.praveen.dto.CreateDriveRequest;
 import com.praveen.dto.DriveResponse;
 import com.praveen.entities.Drive;
 import com.praveen.service.DriveService;
+
+import org.springframework.security.core.Authentication;
 
 @RestController
 @RequestMapping("/springApi/drive")
@@ -51,5 +52,18 @@ public class DriveController {
     	catch(Exception e) {
     		return ResponseEntity.status(400).body("Fetching all drives failed due to " + e.getMessage());
     	}
+    }
+    
+    @GetMapping("/student")
+    public ResponseEntity<?> getDrivesForStudent(Authentication authentication) {
+        try {
+            String email = authentication.getName();
+            return ResponseEntity.ok(
+                    driveService.getDrivesForStudent(email)
+            );
+        } catch (Exception e) {
+            return ResponseEntity.badRequest()
+                    .body("Failed to fetch drives: " + e.getMessage());
+        }
     }
 }
