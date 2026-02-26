@@ -1,8 +1,13 @@
 package com.praveen.controller;
 
 import com.praveen.entities.Student;
+import com.praveen.repository.StudentRepository;
 import com.praveen.service.ResumeService;
 import lombok.RequiredArgsConstructor;
+
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.core.Authentication;
@@ -13,7 +18,11 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 public class ResumeController {
 
+	@Autowired
     private final ResumeService resumeService;
+	
+	@Autowired
+	private StudentRepository studentRepository;
 
     // ===== Upload / Replace =====
     @PostMapping("/upload")
@@ -71,5 +80,19 @@ public class ResumeController {
             return ResponseEntity.badRequest()
                     .body("Delete failed: " + e.getMessage());
         }
+    }
+    
+    @GetMapping("/hasResume")
+    public ResponseEntity<?> hasResume(Authentication authentication) {
+
+        String email = authentication.getName();
+
+        Student student = studentRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Student not found"));
+
+        boolean hasResume = student.getResume() != null 
+                            && student.getResume().length > 0;
+
+        return ResponseEntity.ok(Map.of("hasResume", hasResume));
     }
 }

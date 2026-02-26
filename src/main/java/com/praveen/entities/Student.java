@@ -37,11 +37,11 @@ public class Student {
     @JoinColumn(name = "user_id")
     private User user;
     
- // ===== Resume Fields =====
-
-    @Lob
-    @Column(name = "resume", columnDefinition = "LONGBLOB")
-    private byte[] resume;
-    private String resumeName;
-    private String resumeType;
+	 // ===== Resume Fields =====
+	
+	    @Lob
+	    @Column(name = "resume", columnDefinition = "LONGBLOB")
+	    private byte[] resume;
+	    private String resumeName;
+	    private String resumeType;
 }

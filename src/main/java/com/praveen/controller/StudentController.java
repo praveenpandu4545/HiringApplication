@@ -6,9 +6,12 @@ import com.praveen.dto.DriveResponse;
 import com.praveen.dto.StudentResponse;
 import com.praveen.dto.StudentRoundStatusResponse;
 import com.praveen.entities.Drive;
+import com.praveen.entities.Student;
+import com.praveen.repository.StudentRepository;
 import com.praveen.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -21,6 +24,9 @@ public class StudentController {
 
     @Autowired
     private StudentService studentService;
+    
+    @Autowired
+    private StudentRepository studentRepository;
 
     @PostMapping("/upload")
     public ResponseEntity<?> uploadStudents(@RequestParam Long driveId,
@@ -82,5 +88,37 @@ public class StudentController {
     		return ResponseEntity.status(400).body("Fetching Student Failed Due to " + e.getMessage());
     	}
     }
+    
+    
+    // TO FETCH ALL ROUNDS OF A STUDENT IN HIS LOGIN 
+    
+    @GetMapping("/getAllRounds/{driveId}")
+    public ResponseEntity<?> getAllRoundsByStudent(
+            @PathVariable Long driveId,
+            Authentication authentication) {
+
+        try {
+
+            // 🔐 Extract email from JWT
+            String email = authentication.getName();
+
+            // 🔎 Find student using email
+            Student student = studentRepository.findByEmail(email)
+                    .orElseThrow(() -> new RuntimeException("Student not found"));
+
+            // 📌 Call service using studentId
+            List<StudentRoundStatusResponse> rounds =
+                    studentService.getAllRoundsByStudentIdAndDriveId(
+                            student.getId(), driveId);
+
+            return ResponseEntity.ok(rounds);
+
+        } catch (Exception e) {
+            return ResponseEntity
+                    .badRequest()
+                    .body("Unable to fetch rounds due to " + e.getMessage());
+        }
+    }
+
     
 }
