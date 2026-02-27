@@ -47,12 +47,8 @@ public class AIController {
 
             // 3️⃣ Convert PDF → Text using PDFBox
             String resumeText = extractTextFromPDF(resumeBytes);
-
-            // 4️⃣ Prepare ML Request
+            
          // 4️⃣ Prepare ML Request
-
-         // 4️⃣ Prepare ML Request
-
             String driveRequirements = String.join("\n", drive.getRequiredSkills());
 
             AIEligibilityRequest request =

@@ -4,6 +4,7 @@ import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -16,7 +17,16 @@ public class EmailService {
     @Autowired
     private JavaMailSender mailSender;
 
+    @Value("${app.email.enabled:true}")   // default true if property missing
+    private boolean emailEnabled;
+
     public void sendSimpleEmail(String to, String subject, String body) {
+
+        // 🔴 If email disabled → just skip
+        if (!emailEnabled) {
+            System.out.println("Email service is temporarily disabled.");
+            return;
+        }
 
         try {
             MimeMessage message = mailSender.createMimeMessage();
@@ -24,9 +34,8 @@ public class EmailService {
 
             helper.setTo(to);
             helper.setSubject(subject);
-            helper.setText(body, false); // false = plain text
+            helper.setText(body, false);
 
-            // 👇 Custom Sender Name
             helper.setFrom("praveenprincemi@gmail.com", "AutoHire AI");
 
             mailSender.send(message);

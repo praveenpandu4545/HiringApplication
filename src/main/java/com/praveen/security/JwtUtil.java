@@ -14,7 +14,6 @@ import io.jsonwebtoken.security.Keys;
 public class JwtUtil {
 
     private final String SECRET = "mysecretkeymysecretkeymysecretkey";
-    private final long EXPIRATION = 1000 * 60 * 60; // 1 hour
 
     private Key getSignKey() {
         return Keys.hmacShaKeyFor(SECRET.getBytes());
@@ -27,7 +26,7 @@ public class JwtUtil {
                 .setSubject(email)
                 .claim("role", role)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION))
+                .setExpiration(new Date(System.currentTimeMillis() + 86400000)) // 1 day
                 .signWith(getSignKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
