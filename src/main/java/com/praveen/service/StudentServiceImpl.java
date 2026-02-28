@@ -37,6 +37,9 @@ public class StudentServiceImpl implements StudentService {
 	
 	@Autowired
 	private EmailUtil emailUtil;
+	
+	@Autowired
+	private InterviewScheduleRepository interviewScheduleRepository;
 
 
 	@Transactional
@@ -196,7 +199,7 @@ public class StudentServiceImpl implements StudentService {
 	}
 
 	@Override
-	public List<StudentRoundStatusResponse> 
+	public List<StudentRoundStatusResponse>
 	getAllRoundsByStudentIdAndDriveId(Long studentId, Long driveId) {
 
 	    Student student = studentRepository.findById(studentId)
@@ -206,7 +209,6 @@ public class StudentServiceImpl implements StudentService {
 
 	    for (StudentDrive studentDrive : student.getStudentDrives()) {
 
-	        // Filter only for requested drive
 	        if (!studentDrive.getDrive().getId().equals(driveId)) {
 	            continue;
 	        }
@@ -218,6 +220,22 @@ public class StudentServiceImpl implements StudentService {
 	            srsr.setRoundName(srs.getRoundName());
 	            srsr.setRoundNumber(srs.getRoundNumber());
 	            srsr.setStatus(srs.getStatus());
+
+	            // 🔥 CHECK INTERVIEW
+	            Optional<InterviewSchedule> interviewOpt =
+	                    interviewScheduleRepository
+	                            .findByStudentRoundStatusId(srs.getId());
+
+	            if (interviewOpt.isPresent()) {
+	                InterviewSchedule interview = interviewOpt.get();
+
+	                srsr.setInterviewScheduled(true);
+	                srsr.setInterviewStartTime(interview.getStartTime());
+	                srsr.setInterviewEndTime(interview.getEndTime());
+	                srsr.setPanelName(interview.getPanelMember().getName());
+	            } else {
+	                srsr.setInterviewScheduled(false);
+	            }
 
 	            response.add(srsr);
 	        }

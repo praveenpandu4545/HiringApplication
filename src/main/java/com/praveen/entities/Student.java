@@ -44,4 +44,7 @@ public class Student {
 	    private byte[] resume;
 	    private String resumeName;
 	    private String resumeType;
+	    
+	    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL)
+	    private List<InterviewSchedule> interviews = new ArrayList<>();
 }

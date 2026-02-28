@@ -10,7 +10,12 @@ import lombok.*;
 @AllArgsConstructor
 
 @Entity
-@Table(name = "student_round_status")
+@Table(
+	    name = "student_round_status",
+	    uniqueConstraints = {
+	        @UniqueConstraint(columnNames = {"student_drive_id", "round_number"})
+	    }
+	)	
 public class StudentRoundStatus {
 
     @Id
@@ -25,5 +30,8 @@ public class StudentRoundStatus {
     @JoinColumn(name = "student_drive_id")
     private StudentDrive studentDrive;
 
+    @OneToOne(mappedBy = "studentRoundStatus", cascade = CascadeType.ALL)
+    private InterviewSchedule interviewSchedule;
+    
 }
 

@@ -1,5 +1,8 @@
 package com.praveen.entities;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -23,4 +26,13 @@ public class Employee {
     @OneToOne
     @JoinColumn(name = "user_id")
     private User user;
+    
+ // Panel interviews
+    @OneToMany(mappedBy = "panelMember", cascade = CascadeType.ALL)
+    private List<InterviewSchedule> assignedInterviews = new ArrayList<>();
+
+    // HR scheduled interviews
+    @OneToMany(mappedBy = "scheduledBy", cascade = CascadeType.ALL)
+    private List<InterviewSchedule> scheduledInterviews = new ArrayList<>();
 }
+
