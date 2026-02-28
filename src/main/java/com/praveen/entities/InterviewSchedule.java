@@ -48,6 +48,10 @@ public class InterviewSchedule {
 
     @Column(name = "end_time", nullable = false)
     private LocalDateTime endTime;
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "drive_id", nullable = false)
+    private Drive drive;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

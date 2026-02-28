@@ -26,5 +26,7 @@ public interface InterviewScheduleRepository extends JpaRepository<InterviewSche
     );
     
     Optional<InterviewSchedule> findByStudentRoundStatusId(Long roundId);
+    
+    List<InterviewSchedule> findByScheduledById(Long hrId);
 
 }

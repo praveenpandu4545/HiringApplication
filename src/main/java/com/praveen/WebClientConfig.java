@@ -13,6 +13,7 @@ public class WebClientConfig {
 
     @Bean
     public WebClient mlWebClient() {
+    	System.out.println("ML URL USED: " + mlServiceUrl);
         return WebClient.builder()
                 .baseUrl(mlServiceUrl)
                 .build();

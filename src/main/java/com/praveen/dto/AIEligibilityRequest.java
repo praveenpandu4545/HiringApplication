@@ -1,9 +1,7 @@
 package com.praveen.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.*;
 
 @Getter
 @Setter
@@ -11,7 +9,10 @@ import lombok.Setter;
 @AllArgsConstructor
 public class AIEligibilityRequest {
 
-    private String resume_text;
-    private String drive_requirements;
+    @JsonProperty("resume_text")
+    private String resumeText;
+
+    @JsonProperty("drive_requirements")
+    private String driveRequirements;
 
 }

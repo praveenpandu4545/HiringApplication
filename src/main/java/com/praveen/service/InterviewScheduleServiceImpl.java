@@ -6,7 +6,9 @@ import java.util.List;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import com.praveen.dto.HRInterviewResponse;
 import com.praveen.dto.InterviewConflictResponse;
+import com.praveen.entities.Drive;
 import com.praveen.entities.Employee;
 import com.praveen.entities.InterviewSchedule;
 import com.praveen.entities.InterviewStatus;
@@ -46,6 +48,8 @@ public class InterviewScheduleServiceImpl implements InterviewScheduleService {
         // 2️⃣ Fetch round
         StudentRoundStatus round = roundRepo.findById(roundId)
                 .orElseThrow(() -> new RuntimeException("Round not found"));
+        
+        Drive drive = round.getStudentDrive().getDrive();
 
         // 3️⃣ Validate student belongs to this round
         Student actualStudent = round.getStudentDrive().getStudent();
@@ -117,12 +121,48 @@ public class InterviewScheduleServiceImpl implements InterviewScheduleService {
         schedule.setStartTime(startTime);
         schedule.setEndTime(endTime);
         schedule.setStatus(InterviewStatus.SCHEDULED);
+        schedule.setDrive(drive);
 
         // 9️⃣ Maintain bidirectional relationships
         actualStudent.getInterviews().add(schedule);
         panelMember.getAssignedInterviews().add(schedule);
         hr.getScheduledInterviews().add(schedule);
+        drive.getInterviewSchedules().add(schedule);
 
         return scheduleRepo.save(schedule);
+    }
+    
+    @Override
+    public List<HRInterviewResponse> getInterviewsScheduledByHR() {
+
+        String email = SecurityContextHolder.getContext()
+                .getAuthentication()
+                .getName();
+
+        Employee hr = employeeRepo.findByUserEmail(email)
+                .orElseThrow(() -> new RuntimeException("HR not found"));
+
+        List<InterviewSchedule> schedules =
+                scheduleRepo.findByScheduledById(hr.getId());
+
+        return schedules.stream().map(schedule -> {
+
+            Drive drive = schedule.getDrive();
+            Student student = schedule.getStudent();
+            Employee panel = schedule.getPanelMember();
+            StudentRoundStatus round = schedule.getStudentRoundStatus();
+
+            return HRInterviewResponse.builder()
+                    .collegeName(drive.getCollegeName()) // adjust if college entity exists
+                    .driveName(drive.getDriveName())
+                    .studentName(student.getName())
+                    .studentEmail(student.getEmail())
+                    .roundNumber(round.getRoundNumber())
+                    .panelMemberName(panel.getName())
+                    .startTime(schedule.getStartTime())
+                    .endTime(schedule.getEndTime())
+                    .build();
+
+        }).toList();
     }
 }

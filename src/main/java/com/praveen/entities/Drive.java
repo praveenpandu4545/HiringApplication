@@ -34,4 +34,8 @@ public class Drive {
 	@JsonIgnore
 	private List<CollegeDrive> collegeDrives = new ArrayList<>();
 	
+	@OneToMany(mappedBy = "drive", cascade = CascadeType.ALL)
+	@JsonIgnore
+	private List<InterviewSchedule> interviewSchedules = new ArrayList<>();
+	
 }

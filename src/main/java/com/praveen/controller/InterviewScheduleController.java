@@ -1,9 +1,13 @@
 package com.praveen.controller;
 
+import com.praveen.dto.HRInterviewResponse;
 import com.praveen.dto.InterviewScheduleRequest;
 import com.praveen.entities.InterviewSchedule;
 import com.praveen.service.InterviewScheduleService;
 import lombok.RequiredArgsConstructor;
+
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,5 +31,14 @@ public class InterviewScheduleController {
         );
 
         return ResponseEntity.ok(schedule);
+    }
+    
+    @GetMapping("/hr")
+    public ResponseEntity<?> getHRInterviews() {
+
+        List<HRInterviewResponse> interviews =
+                interviewService.getInterviewsScheduledByHR();
+
+        return ResponseEntity.ok(interviews);
     }
 }
