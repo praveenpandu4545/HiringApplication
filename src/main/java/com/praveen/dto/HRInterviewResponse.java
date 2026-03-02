@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 @Builder
 public class HRInterviewResponse {
 
+	private Long interviewId;
     private String collegeName;
     private String driveName;
     private String studentName;

@@ -1,6 +1,8 @@
 package com.praveen.controller;
 
+import com.praveen.dto.AutoScheduleRequest;
 import com.praveen.dto.HRInterviewResponse;
+import com.praveen.dto.InterviewRescheduleRequest;
 import com.praveen.dto.InterviewScheduleRequest;
 import com.praveen.entities.InterviewSchedule;
 import com.praveen.service.InterviewScheduleService;
@@ -40,5 +42,30 @@ public class InterviewScheduleController {
                 interviewService.getInterviewsScheduledByHR();
 
         return ResponseEntity.ok(interviews);
+    }
+    
+    @PutMapping("/{interviewId}/reschedule")
+    public ResponseEntity<InterviewSchedule> rescheduleInterview(
+            @PathVariable Long interviewId,
+            @RequestBody InterviewRescheduleRequest request) {
+
+        InterviewSchedule updated =
+                interviewService.rescheduleInterview(
+                        interviewId,
+                        request.getPanelMemberId(),
+                        request.getStartTime(),
+                        request.getEndTime()
+                );
+
+        return ResponseEntity.ok(updated);
+    }
+    
+    @PostMapping("/auto-schedule")
+    public ResponseEntity<?> autoSchedule(
+            @RequestBody AutoScheduleRequest request) {
+
+        interviewService.autoSchedule(request);
+
+        return ResponseEntity.ok("Auto scheduling completed successfully");
     }
 }

@@ -76,6 +76,11 @@ public class AIController {
                     ));
         }
     }
+    
+    @PostMapping("/checkATS")
+    public String checkATS() {
+        return "Your ATS is perfect";
+    }
 
     // 🔥 Proper PDF Extraction	
     private String extractTextFromPDF(byte[] pdfBytes) throws Exception {

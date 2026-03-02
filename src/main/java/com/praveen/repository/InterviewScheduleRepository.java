@@ -9,7 +9,7 @@ import java.util.Optional;
 
 public interface InterviewScheduleRepository extends JpaRepository<InterviewSchedule, Long> {
 
-    // 🔥 PANEL CONFLICT CHECK
+    // 🔥 NORMAL CONFLICT CHECK
     List<InterviewSchedule>
     findByPanelMemberIdAndStartTimeLessThanAndEndTimeGreaterThan(
             Long panelMemberId,
@@ -17,16 +17,31 @@ public interface InterviewScheduleRepository extends JpaRepository<InterviewSche
             LocalDateTime startTime
     );
 
-    // 🔥 STUDENT CONFLICT CHECK
     List<InterviewSchedule>
     findByStudentIdAndStartTimeLessThanAndEndTimeGreaterThan(
             Long studentId,
             LocalDateTime endTime,
             LocalDateTime startTime
     );
-    
-    Optional<InterviewSchedule> findByStudentRoundStatusId(Long roundId);
-    
-    List<InterviewSchedule> findByScheduledById(Long hrId);
 
+    // 🔥 RESCHEDULE CONFLICT CHECK (Exclude current)
+    List<InterviewSchedule>
+    findByPanelMemberIdAndIdNotAndStartTimeLessThanAndEndTimeGreaterThan(
+            Long panelMemberId,
+            Long interviewId,
+            LocalDateTime endTime,
+            LocalDateTime startTime
+    );
+
+    List<InterviewSchedule>
+    findByStudentIdAndIdNotAndStartTimeLessThanAndEndTimeGreaterThan(
+            Long studentId,
+            Long interviewId,
+            LocalDateTime endTime,
+            LocalDateTime startTime
+    );
+
+    Optional<InterviewSchedule> findByStudentRoundStatusId(Long roundId);
+
+    List<InterviewSchedule> findByScheduledById(Long hrId);
 }
