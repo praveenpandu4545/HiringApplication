@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.praveen.dto.HRInterviewResponse;
 import com.praveen.dto.InterviewConflictResponse;
+import com.praveen.dto.PanelInterviewResponseDTO;
 import com.praveen.entities.Drive;
 import com.praveen.entities.Employee;
 import com.praveen.entities.InterviewSchedule;
@@ -20,6 +21,7 @@ import com.praveen.repository.EmployeeRepository;
 import com.praveen.repository.InterviewScheduleRepository;
 import com.praveen.repository.StudentRepository;
 import com.praveen.repository.StudentRoundStatusRepository;
+import com.praveen.security.JwtUtil;
 
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -42,6 +44,7 @@ public class InterviewScheduleServiceImpl implements InterviewScheduleService {
     private final EmployeeRepository employeeRepo;
     private final StudentRoundStatusRepository roundRepo;
     private final DriveRepository driveRepo;
+    private final JwtUtil jwtUtil;
     
     private static final Logger log =
             LoggerFactory.getLogger(InterviewScheduleServiceImpl.class);
@@ -168,7 +171,7 @@ public class InterviewScheduleServiceImpl implements InterviewScheduleService {
 
             return HRInterviewResponse.builder()
             		.interviewId(schedule.getId())
-                    .collegeName(drive.getCollegeName()) // adjust if college entity exists
+                    .collegeName(drive.getCollegeName()) 
                     .driveName(drive.getDriveName())
                     .studentName(student.getName())
                     .studentEmail(student.getEmail())
@@ -435,5 +438,34 @@ public class InterviewScheduleServiceImpl implements InterviewScheduleService {
         }
 
         log.info("========== AUTO SCHEDULING COMPLETED ==========");
+    }
+    
+    @Override
+    public List<PanelInterviewResponseDTO> 
+        getPanelInterviews(String token) {
+
+        String jwt = token.substring(7); // Remove "Bearer "
+        String email = jwtUtil.extractEmail(jwt);
+
+        Employee panel = employeeRepo.findByUserEmail(email)
+                .orElseThrow(() -> 
+                    new RuntimeException("Panel not found"));
+
+        List<InterviewSchedule> schedules =
+        		scheduleRepo.findByPanelMember_IdOrderByStartTimeAsc(
+                                panel.getId());
+
+        return schedules.stream()
+                .map((InterviewSchedule schedule) -> 
+                        PanelInterviewResponseDTO.builder()
+                                .driveName(schedule.getDrive().getDriveName())
+                                .studentName(schedule.getStudent().getName())
+                                .studentEmail(schedule.getStudent().getEmail())
+                                .roundNumber(schedule.getStudentRoundStatus().getRoundNumber())
+                                .startTime(schedule.getStartTime())
+                                .endTime(schedule.getEndTime())
+                                .build()
+                )
+                .collect(Collectors.toList());
     }
 }

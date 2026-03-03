@@ -1,0 +1,20 @@
+package com.praveen.dto;
+
+import lombok.*;
+
+import java.time.LocalDateTime;
+
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+public class PanelInterviewResponseDTO {
+
+    private String driveName;
+    private String studentName;
+    private String studentEmail;
+    private Integer roundNumber;
+    private LocalDateTime startTime;
+    private LocalDateTime endTime;
+}

@@ -4,6 +4,7 @@ import com.praveen.dto.AutoScheduleRequest;
 import com.praveen.dto.HRInterviewResponse;
 import com.praveen.dto.InterviewRescheduleRequest;
 import com.praveen.dto.InterviewScheduleRequest;
+import com.praveen.dto.PanelInterviewResponseDTO;
 import com.praveen.entities.InterviewSchedule;
 import com.praveen.service.InterviewScheduleService;
 import lombok.RequiredArgsConstructor;
@@ -67,5 +68,15 @@ public class InterviewScheduleController {
         interviewService.autoSchedule(request);
 
         return ResponseEntity.ok("Auto scheduling completed successfully");
+    }
+    
+    @GetMapping("/panel-interviews")
+    public ResponseEntity<List<PanelInterviewResponseDTO>>
+        getMyInterviews(
+            @RequestHeader("Authorization") String token) {
+
+        return ResponseEntity.ok(
+        		interviewService.getPanelInterviews(token)
+        );
     }
 }

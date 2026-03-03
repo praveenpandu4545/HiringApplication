@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.praveen.dto.AutoScheduleRequest;
 import com.praveen.dto.HRInterviewResponse;
+import com.praveen.dto.PanelInterviewResponseDTO;
 import com.praveen.entities.InterviewSchedule;
 
 public interface InterviewScheduleService {
@@ -18,4 +19,6 @@ public interface InterviewScheduleService {
     );
     
     void autoSchedule(AutoScheduleRequest request);
+    
+    List<PanelInterviewResponseDTO> getPanelInterviews(String token);
 }
