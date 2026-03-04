@@ -3,14 +3,17 @@ package com.praveen.controller;
 import com.praveen.dto.AutoScheduleRequest;
 import com.praveen.dto.HRInterviewResponse;
 import com.praveen.dto.InterviewRescheduleRequest;
+import com.praveen.dto.InterviewReviewRequest;
 import com.praveen.dto.InterviewScheduleRequest;
 import com.praveen.dto.PanelInterviewResponseDTO;
 import com.praveen.entities.InterviewSchedule;
+import com.praveen.repository.InterviewScheduleRepository;
 import com.praveen.service.InterviewScheduleService;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,7 +22,11 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class InterviewScheduleController {
 
+	@Autowired
     private final InterviewScheduleService interviewService;
+    
+	@Autowired
+    private final InterviewScheduleRepository interviewScheduleRepository;
 
     @PostMapping("/schedule")
     public ResponseEntity<InterviewSchedule> scheduleInterview(
@@ -78,5 +85,20 @@ public class InterviewScheduleController {
         return ResponseEntity.ok(
         		interviewService.getPanelInterviews(token)
         );
+    }
+    
+    @PutMapping("/review")
+    public ResponseEntity<?> submitReview(@RequestBody InterviewReviewRequest request){
+
+        InterviewSchedule schedule =
+            interviewScheduleRepository
+            .findById(request.getInterviewScheduleId())
+            .orElseThrow(() -> new RuntimeException("Interview not found"));
+
+        schedule.setReview(request.getReview());
+
+        interviewScheduleRepository.save(schedule);
+
+        return ResponseEntity.ok("Review saved successfully");
     }
 }

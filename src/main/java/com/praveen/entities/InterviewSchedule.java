@@ -56,4 +56,6 @@ public class InterviewSchedule {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private InterviewStatus status;
+    
+    private String review;
 }

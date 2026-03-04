@@ -18,4 +18,6 @@ public class StudentRoundStatusResponse {
     private LocalDateTime interviewStartTime;
     private LocalDateTime interviewEndTime;
     private String panelName;
+    
+    private String panelReview;
 }

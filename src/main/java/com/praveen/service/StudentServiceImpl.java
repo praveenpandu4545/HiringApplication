@@ -233,6 +233,7 @@ public class StudentServiceImpl implements StudentService {
 	                srsr.setInterviewStartTime(interview.getStartTime());
 	                srsr.setInterviewEndTime(interview.getEndTime());
 	                srsr.setPanelName(interview.getPanelMember().getName());
+	                srsr.setPanelReview(interview.getReview());
 	            } else {
 	                srsr.setInterviewScheduled(false);
 	            }

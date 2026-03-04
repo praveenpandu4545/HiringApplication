@@ -458,6 +458,8 @@ public class InterviewScheduleServiceImpl implements InterviewScheduleService {
         return schedules.stream()
                 .map((InterviewSchedule schedule) -> 
                         PanelInterviewResponseDTO.builder()
+                        		.review(schedule.getReview())
+                        		.id(schedule.getId())
                                 .driveName(schedule.getDrive().getDriveName())
                                 .studentName(schedule.getStudent().getName())
                                 .studentEmail(schedule.getStudent().getEmail())

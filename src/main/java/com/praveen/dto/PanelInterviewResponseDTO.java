@@ -11,10 +11,12 @@ import java.time.LocalDateTime;
 @Builder
 public class PanelInterviewResponseDTO {
 
+	private Long id;
     private String driveName;
     private String studentName;
     private String studentEmail;
     private Integer roundNumber;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
+    private String review;
 }
