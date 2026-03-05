@@ -17,7 +17,6 @@ public class StudentRoundStatusController {
     @Autowired
     private StudentRoundStatusService service;
 
-    // 🔹 Manual Update (Already Existing)
     @PatchMapping("/{id}")
     public ResponseEntity<?> updateStatus(
             @PathVariable Long id,
@@ -32,7 +31,6 @@ public class StudentRoundStatusController {
         }
     }
 
-    // 🔹 Smart Bulk Excel Update
     @PostMapping("/bulk-update")
     public ResponseEntity<?> bulkUpdateStatus(
             @RequestParam("driveId") Long driveId,

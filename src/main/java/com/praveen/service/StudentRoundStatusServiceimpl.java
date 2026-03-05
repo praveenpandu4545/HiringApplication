@@ -26,7 +26,6 @@ public class StudentRoundStatusServiceimpl implements StudentRoundStatusService 
     @Autowired
     private StudentRepository studentRepo;
 
-    // 🔹 Manual Update (Already Existing)
     @Override
     public void updateStatus(Long id, UpdateStudentRoundStatusRequest request) {
 
@@ -36,9 +35,20 @@ public class StudentRoundStatusServiceimpl implements StudentRoundStatusService 
 
         entity.setStatus(request.getStatus());
         roundRepo.save(entity);
+        
+        int originalRoundNumber = entity.getRoundNumber();
+        
+        if("REJECTED".equals(request.getStatus())) {
+        	StudentDrive sd = entity.getStudentDrive();
+        	for(StudentRoundStatus srs : sd.getStudentRoundStatuses()) {
+        		if(srs.getRoundNumber() > originalRoundNumber) {
+        			srs.setStatus("REJECTED");
+        			roundRepo.save(srs);
+        		}
+        	}
+        }
     }
 
-    // 🔹 Smart Bulk Update (Excel)
     @Override
     public BulkUpdateResponse bulkUpdateStatus(
             MultipartFile file,
@@ -93,6 +103,17 @@ public class StudentRoundStatusServiceimpl implements StudentRoundStatusService 
                 // 4️⃣ Update Status
                 round.setStatus(status);
                 roundRepo.save(round);
+                
+                int originalRoundNumber = round.getRoundNumber();
+                if("REJECTED".equals(status)) {
+                	StudentDrive sd = round.getStudentDrive();
+                	for(StudentRoundStatus srs : sd.getStudentRoundStatuses()) {
+                		if(srs.getRoundNumber() > originalRoundNumber) {
+                			srs.setStatus("REJECTED");
+                			roundRepo.save(srs);
+                		}
+                	}
+                }
 
                 successCount++;
 

@@ -57,5 +57,6 @@ public class InterviewSchedule {
     @Column(nullable = false)
     private InterviewStatus status;
     
+    @Column(columnDefinition = "TEXT")
     private String review;
 }
