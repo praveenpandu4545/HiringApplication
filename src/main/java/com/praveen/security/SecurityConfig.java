@@ -30,6 +30,8 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                     .requestMatchers("/auth/**").permitAll()
                     .requestMatchers("/springApi/college/getAll").permitAll()
+                    .requestMatchers("/ws/**").permitAll()
+                    .requestMatchers("/api/chat/**").authenticated()
                     .anyRequest().authenticated()
             )
             .sessionManagement(session ->

@@ -1,5 +1,6 @@
 package com.praveen.controller;
 
+import com.praveen.dto.HrMemberResponse;
 import com.praveen.dto.PanelMemberResponse;
 import com.praveen.service.EmployeeService;
 import lombok.RequiredArgsConstructor;
@@ -17,5 +18,10 @@ public class EmployeeController {
     @GetMapping("/panel-members")
     public List<PanelMemberResponse> getPanelMembers() {
         return employeeService.getPanelMembers();
+    }
+    
+    @GetMapping("/hr-members")
+    public List<HrMemberResponse> getHrMembers() {
+        return employeeService.getHrMembers();
     }
 }
