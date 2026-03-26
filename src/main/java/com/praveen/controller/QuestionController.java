@@ -31,4 +31,10 @@ public class QuestionController {
         questionService.saveQuestionsFromExcel(file);
         return "Questions uploaded successfully";
     }
+    
+    @GetMapping("/getAllDomains")
+    public List<String> getAllDomains(){
+    		return questionService.getAllDomains();
+    }
+    
 }

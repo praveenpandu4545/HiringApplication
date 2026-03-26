@@ -1,4 +1,7 @@
 package com.praveen.entities;
+import java.util.ArrayList;
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.*;
@@ -23,4 +26,7 @@ public class Round {
     @JoinColumn(name = "drive_id")
     @JsonIgnore
     private Drive drive;
+    
+    @OneToMany(mappedBy = "round", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Assessment> assessments = new ArrayList<>();
 }

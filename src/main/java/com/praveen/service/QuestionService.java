@@ -10,4 +10,5 @@ public interface QuestionService {
     Question saveQuestion(Question question);
     List<Question> getAllQuestions();
     void saveQuestionsFromExcel(MultipartFile file);
+    List<String> getAllDomains();
 }

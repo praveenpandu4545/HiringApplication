@@ -38,4 +38,7 @@ public class Drive {
 	@JsonIgnore
 	private List<InterviewSchedule> interviewSchedules = new ArrayList<>();
 	
+	@OneToMany(mappedBy = "drive", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<Assessment> assessments = new ArrayList<>();
+	
 }

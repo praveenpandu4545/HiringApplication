@@ -33,5 +33,8 @@ public class StudentRoundStatus {
     @OneToOne(mappedBy = "studentRoundStatus", cascade = CascadeType.ALL)
     private InterviewSchedule interviewSchedule;
     
+    @OneToOne(mappedBy = "studentRoundStatus", cascade = CascadeType.ALL)
+    private StudentAssessment studentAssessment;
+    
 }
 

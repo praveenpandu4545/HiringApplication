@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 @Service
@@ -115,4 +116,19 @@ public class QuestionServiceImpl implements QuestionService {
                 return cell.toString().trim();
         }
     }
+
+	@Override
+	public List<String> getAllDomains() {
+		List<Question> questions = questionRepository.findAll();
+		HashSet<String> set = new HashSet<>();
+		for(Question question : questions) {
+			String d = question.getDomain();
+			set.add(d);
+		}
+		List<String> domains = new ArrayList<>();
+		for(String s : set) {
+			domains.add(s);
+		}
+		return domains;
+	}
 }
