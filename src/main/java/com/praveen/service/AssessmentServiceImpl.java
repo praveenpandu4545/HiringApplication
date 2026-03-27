@@ -5,10 +5,16 @@ import com.praveen.dto.AssessmentResponse;
 import com.praveen.entities.Assessment;
 import com.praveen.entities.Drive;
 import com.praveen.entities.Round;
+import com.praveen.entities.Student;
+import com.praveen.entities.StudentAssessment;
+import com.praveen.entities.StudentDrive;
 import com.praveen.repository.AssessmentRepository;
 import com.praveen.repository.DriveRepository;
 import com.praveen.repository.RoundRepository;
+import com.praveen.repository.StudentAssessmentRepository;
 import com.praveen.service.AssessmentService;
+
+import jakarta.transaction.Transactional;
 
 import org.springframework.stereotype.Service;
 
@@ -21,15 +27,19 @@ public class AssessmentServiceImpl implements AssessmentService {
     private final AssessmentRepository assessmentRepository;
     private final DriveRepository driveRepository;
     private final RoundRepository roundRepository;
+    private final StudentAssessmentRepository studentAssessmentRepository;
 
     public AssessmentServiceImpl(AssessmentRepository assessmentRepository,
                                  DriveRepository driveRepository,
-                                 RoundRepository roundRepository) {
+                                 RoundRepository roundRepository,
+                                 StudentAssessmentRepository studentAssessmentRepository) {
         this.assessmentRepository = assessmentRepository;
         this.driveRepository = driveRepository;
         this.roundRepository = roundRepository;
+        this.studentAssessmentRepository = studentAssessmentRepository;
     }
 
+    @Transactional
     @Override
     public Assessment saveAssessment(AssessmentRequest request) {
 
@@ -59,8 +69,22 @@ public class AssessmentServiceImpl implements AssessmentService {
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
                 .build();
+        assessment = assessmentRepository.save(assessment);
+        
+        List<StudentDrive> studentDrives = drive.getStudentDrives();
+        for(StudentDrive sd : studentDrives) {
+        	Student student = sd.getStudent();
+        	StudentAssessment studentAssessment = new StudentAssessment();
+        	studentAssessment.setAssessment(assessment);
+        	studentAssessment.setMarksForCorrectAnswer(request.getMarksForCorrectAnswer());
+        	studentAssessment.setNegativeMarks(request.getNegativeMarks());
+        	studentAssessment.setStudent(student);
+        	studentAssessmentRepository.save(studentAssessment);
+        	student.getStudentAssessments().add(studentAssessment);
+        }
+        
 
-        return assessmentRepository.save(assessment);
+        return assessment;
     }
 
     @Override

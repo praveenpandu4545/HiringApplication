@@ -43,6 +43,13 @@ public class StudentAssessment {
     private int correctAnswers;
     private int wrongAnswers;
     private int attempted;
+    
+ // ===== MARKING =====
+
+    private double marksForCorrectAnswer;
+    private Double negativeMarks;
+    private double totalMarks;
+    private double passingMarks;
 
     // ===== TIMING =====
 
