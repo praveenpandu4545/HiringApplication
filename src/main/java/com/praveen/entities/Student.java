@@ -40,6 +40,9 @@ public class Student {
     @JoinColumn(name = "user_id")
     private User user;
     
+    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<StudentResult> results = new ArrayList<>();
+    
 	 // ===== Resume Fields =====
 	
 	    @Lob

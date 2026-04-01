@@ -1,8 +1,7 @@
 package com.praveen.dto;
 
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import java.time.LocalDateTime;
+
 import lombok.*;
 
 @Data
@@ -12,5 +11,17 @@ import lombok.*;
 public class StudentAssessmentResponse {
 
     private Long id;
-    private String assessmentName;
+
+    // 🔥 Flattened fields (NO ENTITY)
+    private Long assessmentId;
+    private String title;
+    private String description;
+
+    private LocalDateTime startTime;
+    private LocalDateTime endTime;
+    private Integer duration;
+
+    private boolean active;
+
+    private String status; // COMPLETED / IN_PROGRESS / ABSENT
 }

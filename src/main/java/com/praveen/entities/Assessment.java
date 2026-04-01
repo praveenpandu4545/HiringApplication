@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
 @Table(name = "assessments")
@@ -33,8 +34,14 @@ public class Assessment {
     private Round round;
 
     @OneToMany(mappedBy = "assessment", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<AssessmentQuestion> assessmentQuestions = new ArrayList<>();
+    @JsonManagedReference
+    private List<AssessmentQuestion> assessmentQuestions;
 
+    // ===== RESULTS =====
+
+    @OneToMany(mappedBy = "assessment", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<StudentResult> studentResults = new ArrayList<>();
+    
     // ===== BASIC INFO =====
 
     private String title;

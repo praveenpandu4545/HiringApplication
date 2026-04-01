@@ -5,6 +5,8 @@ import lombok.*;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "questions")
 @Data
@@ -33,5 +35,9 @@ public class Question {
 
     @Column(nullable = false)
     private String difficulty;
+    
+    @OneToMany(mappedBy = "question")
+    @JsonIgnore  // 🔥 VERY IMPORTANT
+    private List<AssessmentQuestion> assessmentQuestions;
 
 }

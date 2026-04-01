@@ -44,12 +44,6 @@ public class StudentAssessment {
     private int wrongAnswers;
     private int attempted;
     
- // ===== MARKING =====
-
-    private double marksForCorrectAnswer;
-    private Double negativeMarks;
-    private double totalMarks;
-    private double passingMarks;
 
     // ===== TIMING =====
 
@@ -63,10 +57,6 @@ public class StudentAssessment {
 
     private String status; // IN_PROGRESS, COMPLETED, ABSENT
 
-    // ===== ANSWERS =====
-
-    @OneToMany(mappedBy = "studentAssessment", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<StudentAnswer> answers;
     
     @OneToOne
     @JoinColumn(name = "student_round_status_id")

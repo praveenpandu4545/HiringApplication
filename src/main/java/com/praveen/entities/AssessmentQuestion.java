@@ -1,7 +1,7 @@
 package com.praveen.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -24,20 +24,15 @@ public class AssessmentQuestion {
 
     // ===== RELATIONS =====
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "assessment_id", nullable = false)
-    @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name = "assessment_id")
+    @JsonBackReference  // 🔥 ADD THIS
     private Assessment assessment;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "question_id", nullable = false)
     private Question question;
 
-    // ===== CONTROL FIELDS =====
-
-    private int questionOrder;
-
-    private double marks; // optional override
-
+    @Column(name = "mandatory", nullable = false)
     private boolean mandatory;
-}	
+}
