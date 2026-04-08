@@ -78,8 +78,85 @@ public class AIController {
     }
     
     @PostMapping("/checkATS")
-    public String checkATS() {
-        return "Your ATS is perfect";
+    public ResponseEntity<?> checkATS(Authentication authentication) {
+
+        try {
+            String email = authentication.getName();
+
+            Student student = studentRepository.findByEmail(email)
+                    .orElseThrow(() -> new RuntimeException("Student not found"));
+
+            byte[] resumeBytes = student.getResume();
+
+            if (resumeBytes == null || resumeBytes.length == 0) {
+                return ResponseEntity.badRequest().body(Map.of(
+                        "success", false,
+                        "message", "Resume not uploaded"
+                ));
+            }
+
+            // 🔥 Extract text from PDF
+            String resumeText = extractTextFromPDF(resumeBytes);
+
+            // 🔥 Send to ML service
+            Object mlResponse = mlWebClient.post()
+                    .uri("/check-ats")   // FastAPI endpoint
+                    .bodyValue(Map.of("resumeText", resumeText))
+                    .retrieve()
+                    .bodyToMono(Object.class)
+                    .block();
+
+            return ResponseEntity.ok(Map.of(
+                    "success", true,
+                    "data", mlResponse
+            ));
+
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of(
+                    "success", false,
+                    "message", "ATS check failed",
+                    "error", e.getMessage()
+            ));
+        }
+    }
+    
+    @PostMapping("/summarize-review/{driveId}")
+    public ResponseEntity<?> summarizeReview(
+            @PathVariable Long driveId,
+            @RequestBody Map<String, String> body
+    ) {
+        try {
+
+            String reviewText = body.get("review");
+
+            Drive drive = driveRepository.findById(driveId)
+                    .orElseThrow(() -> new RuntimeException("Drive not found"));
+
+            String requirements = String.join("\n", drive.getRequiredSkills());
+
+            // 🔥 Send to ML
+            Object mlResponse = mlWebClient.post()
+                    .uri("/summarize-review")
+                    .bodyValue(Map.of(
+                            "review", reviewText,
+                            "requirements", requirements
+                    ))
+                    .retrieve()
+                    .bodyToMono(Object.class)
+                    .block();
+
+            return ResponseEntity.ok(Map.of(
+                    "success", true,
+                    "data", mlResponse
+            ));
+
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of(
+                    "success", false,
+                    "message", "Summary failed",
+                    "error", e.getMessage()
+            ));
+        }
     }
 
     // 🔥 Proper PDF Extraction	
