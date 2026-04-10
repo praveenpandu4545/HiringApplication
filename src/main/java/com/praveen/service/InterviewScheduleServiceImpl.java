@@ -179,6 +179,7 @@ public class InterviewScheduleServiceImpl implements InterviewScheduleService {
                     .panelMemberName(panel.getName())
                     .startTime(schedule.getStartTime())
                     .endTime(schedule.getEndTime())
+                    .status(round.getStatus())
                     .build();
 
         }).toList();
@@ -462,6 +463,7 @@ public class InterviewScheduleServiceImpl implements InterviewScheduleService {
                         		.id(schedule.getId())
                                 .driveName(schedule.getDrive().getDriveName())
                                 .studentName(schedule.getStudent().getName())
+                                .studentId(schedule.getStudent().getUser().getId())
                                 .studentEmail(schedule.getStudent().getEmail())
                                 .roundNumber(schedule.getStudentRoundStatus().getRoundNumber())
                                 .startTime(schedule.getStartTime())

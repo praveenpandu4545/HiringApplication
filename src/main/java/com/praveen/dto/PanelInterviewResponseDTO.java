@@ -15,6 +15,7 @@ public class PanelInterviewResponseDTO {
     private String driveName;
     private String studentName;
     private String studentEmail;
+    private Long studentId;
     private Integer roundNumber;
     private LocalDateTime startTime;
     private LocalDateTime endTime;

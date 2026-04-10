@@ -19,4 +19,5 @@ public class HRInterviewResponse {
     private String panelMemberName;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
+    private String status;
 }
