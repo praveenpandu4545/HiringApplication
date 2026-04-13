@@ -50,16 +50,27 @@ public class AIController {
             }
 
             String resumeText = extractTextFromPDF(resumeBytes);
-            String driveRequirements = String.join("\n", drive.getRequiredSkills());
+            String driveRequirements = "";
+
+            if (drive.getRequiredSkills() != null) {
+                driveRequirements = String.join("\n", drive.getRequiredSkills());
+            }
 
             AIEligibilityRequest request =
                     new AIEligibilityRequest(resumeText, driveRequirements);
 
             Object mlResponse = mlWebClient.post()
                     .uri("/check-eligibility")
-                    .bodyValue(request)
+                    .bodyValue(Map.of(
+                            "resume_text", resumeText,
+                            "drive_requirements", driveRequirements
+                    ))
                     .retrieve()
-                    .bodyToMono(Object.class)
+                    .onStatus(status -> status.isError(), response ->
+                        response.bodyToMono(String.class)
+                                .map(error -> new RuntimeException("FastAPI Error: " + error))
+                    )
+                    .bodyToMono(String.class)
                     .block();
 
             return ResponseEntity.ok(Map.of(
@@ -97,13 +108,20 @@ public class AIController {
 
             // 🔥 Extract text from PDF
             String resumeText = extractTextFromPDF(resumeBytes);
-
+            String driveRequirements = "Suitable for any student";
             // 🔥 Send to ML service
             Object mlResponse = mlWebClient.post()
                     .uri("/check-ats")   // FastAPI endpoint
-                    .bodyValue(Map.of("resumeText", resumeText))
+                    .bodyValue(Map.of(
+                    	    "resume_text", resumeText,
+                    	    "job_description", driveRequirements   // 🔥 USE REAL DATA
+                    	))
                     .retrieve()
-                    .bodyToMono(Object.class)
+                    .onStatus(status -> status.isError(), response ->
+                        response.bodyToMono(String.class)
+                                .map(error -> new RuntimeException("FastAPI Error: " + error))
+                    )
+                    .bodyToMono(String.class)
                     .block();
 
             return ResponseEntity.ok(Map.of(
@@ -142,7 +160,11 @@ public class AIController {
                             "requirements", requirements
                     ))
                     .retrieve()
-                    .bodyToMono(Object.class)
+                    .onStatus(status -> status.isError(), response ->
+                        response.bodyToMono(String.class)
+                                .map(error -> new RuntimeException("FastAPI Error: " + error))
+                    )
+                    .bodyToMono(String.class)
                     .block();
 
             return ResponseEntity.ok(Map.of(

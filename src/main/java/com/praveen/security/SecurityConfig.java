@@ -32,6 +32,7 @@ public class SecurityConfig {
                     .requestMatchers("/springApi/college/getAll").permitAll()
                     .requestMatchers("/ws/**").permitAll()
                     .requestMatchers("/api/chat/**").authenticated()
+                    .requestMatchers("/springApi/interviews/**").permitAll()
                     .anyRequest().authenticated()
             )
             .sessionManagement(session ->

@@ -114,9 +114,16 @@ public class InterviewScheduleController {
         return ResponseEntity.ok("Review saved successfully");
     }
     
-    // 🔥 START CALL (Panel)
     @PostMapping("/start")
-    public Call startCall(@RequestBody Call request, Authentication auth) {
+    public ResponseEntity<?> startCall(@RequestBody Call request, Authentication auth) {
+
+        if (auth == null || auth.getName() == null) {
+            return ResponseEntity.status(401).body("Unauthorized");
+        }
+
+        if (request.getReceiverId() == null) {
+            return ResponseEntity.badRequest().body("ReceiverId is required");
+        }
 
         String username = auth.getName();
         Long callerId = userService.getUserIdFromUsername(username);
@@ -125,38 +132,71 @@ public class InterviewScheduleController {
         request.setStatus("CALLING");
         request.setChannelName("interview_" + request.getInterviewId());
 
-        return callRepository.save(request);
+        Call saved = callRepository.save(request);
+
+        return ResponseEntity.ok(saved);
     }
 
-    // 🔥 INCOMING CALL (Student)
     @GetMapping("/incoming-call")
     public ResponseEntity<?> getIncomingCall(Authentication auth) {
 
-        String username = auth.getName();
-        Long studentId = userService.getUserIdFromUsername(username);
-        Optional<Call> call = callRepository
-                .findByReceiverIdAndStatus(studentId, "CALLING");
+        try {
+            if (auth == null || auth.getName() == null) {
+                return ResponseEntity.status(401).body("Unauthorized");
+            }
 
-        if (call.isPresent()) {
-            return ResponseEntity.ok(call.get());
-        } else {
-            return ResponseEntity.ok(null); // important
+            String username = auth.getName();
+            Long studentId = userService.getUserIdFromUsername(username);
+
+            if (studentId == null) {
+                return ResponseEntity.status(404).body("User not found");
+            }
+
+            Call call = callRepository
+            	    .findTopByReceiverIdAndStatusInOrderByIdDesc(
+            	        studentId,
+            	        List.of("CALLING", "ACCEPTED")
+            	    );
+
+            return ResponseEntity.ok(call); // null is fine
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body("Error fetching call");
         }
     }
 
-    // 🔥 ACCEPT CALL
     @PostMapping("/accept/{id}")
-    public void acceptCall(@PathVariable Long id) {
-        Call call = callRepository.findById(id).orElseThrow();
+    public ResponseEntity<?> acceptCall(@PathVariable Long id) {
+        Call call = callRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Call not found"));
+
         call.setStatus("ACCEPTED");
         callRepository.save(call);
+
+        return ResponseEntity.ok(call);
     }
 
-    // 🔥 REJECT CALL
     @PostMapping("/reject/{id}")
-    public void rejectCall(@PathVariable Long id) {
-        Call call = callRepository.findById(id).orElseThrow();
+    public ResponseEntity<?> rejectCall(@PathVariable Long id) {
+        Call call = callRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Call not found"));
+
         call.setStatus("REJECTED");
         callRepository.save(call);
+
+        return ResponseEntity.ok(call);
+    }
+    
+    @PostMapping("/end-call/{id}")
+    public ResponseEntity<?> endCall(@PathVariable Long id) {
+
+        Call call = callRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Call not found"));
+
+        call.setStatus("COMPLETED");
+        callRepository.save(call);
+
+        return ResponseEntity.ok("Call ended");
     }
 }
