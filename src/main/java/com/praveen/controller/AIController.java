@@ -72,6 +72,8 @@ public class AIController {
                     )
                     .bodyToMono(String.class)
                     .block();
+            
+//            System.out.println("ML Response: " + mlResponse);
 
             return ResponseEntity.ok(Map.of(
                     "success", true,
@@ -108,13 +110,13 @@ public class AIController {
 
             // 🔥 Extract text from PDF
             String resumeText = extractTextFromPDF(resumeBytes);
-            String driveRequirements = "Suitable for any student";
+//            String driveRequirements = "Suitable for any student";
             // 🔥 Send to ML service
             Object mlResponse = mlWebClient.post()
                     .uri("/check-ats")   // FastAPI endpoint
                     .bodyValue(Map.of(
-                    	    "resume_text", resumeText,
-                    	    "job_description", driveRequirements   // 🔥 USE REAL DATA
+                    	    "resume_text", resumeText
+//                    	    "job_description", driveRequirements   // 🔥 USE REAL DATA
                     	))
                     .retrieve()
                     .onStatus(status -> status.isError(), response ->
@@ -123,6 +125,8 @@ public class AIController {
                     )
                     .bodyToMono(String.class)
                     .block();
+            
+            System.out.println("ML Response: " + mlResponse);
 
             return ResponseEntity.ok(Map.of(
                     "success", true,
@@ -166,6 +170,8 @@ public class AIController {
                     )
                     .bodyToMono(String.class)
                     .block();
+            
+//            System.out.println("ML Response: " + mlResponse);
 
             return ResponseEntity.ok(Map.of(
                     "success", true,

@@ -58,9 +58,7 @@ public class DriveController {
     public ResponseEntity<?> getDrivesForStudent(Authentication authentication) {
         try {
             String email = authentication.getName();
-            return ResponseEntity.ok(
-                    driveService.getDrivesForStudent(email)
-            );
+            return ResponseEntity.ok(driveService.getDrivesForStudent(email));
         } catch (Exception e) {
             return ResponseEntity.badRequest()
                     .body("Failed to fetch drives: " + e.getMessage());

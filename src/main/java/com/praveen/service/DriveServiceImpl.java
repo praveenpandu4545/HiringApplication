@@ -8,11 +8,13 @@ import com.praveen.repository.CollegeRepository;
 import com.praveen.repository.DriveRepository;
 import com.praveen.repository.StudentRepository;
 import com.praveen.dto.CreateDriveRequest;
+import com.praveen.dto.DriveDTO;
 import com.praveen.dto.DriveResponse;
 import com.praveen.dto.RoundRequest;
 import com.praveen.dto.RoundResponse;
 import com.praveen.entities.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class DriveServiceImpl implements DriveService {
@@ -107,13 +109,29 @@ public class DriveServiceImpl implements DriveService {
 
 	
 	@Override
-	public List<Drive> getDrivesForStudent(String email) {
+    public List<DriveDTO> getDrivesForStudent(String email) {
 
-	    Student student = studentRepository.findByEmail(email)
-	            .orElseThrow(() -> new RuntimeException("Student not found"));
+        Student student = studentRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Student not found"));
 
-	    String collegeName = student.getCollegeName();
+        String collegeName = student.getCollegeName();
 
-	    return driveRepository.findByCollegeName(collegeName);
-	}
+        List<Drive> drives = driveRepository.findByCollegeName(collegeName);
+
+        return drives.stream()
+                .map(this::convertToStudentDriveDTO)
+                .collect(Collectors.toList());
+    }
+
+    private DriveDTO convertToStudentDriveDTO(Drive drive) {
+        DriveDTO dto = new DriveDTO();
+        dto.setId(drive.getId());
+        dto.setDriveName(drive.getDriveName());
+        dto.setCollegeName(drive.getCollegeName());
+        dto.setNoOfRounds(drive.getNoOfRounds());
+        dto.setRequiredSkills(
+                drive.getRequiredSkills() != null ? drive.getRequiredSkills() : List.of()
+        );
+        return dto;
+    }
 }
