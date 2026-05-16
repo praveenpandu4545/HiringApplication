@@ -296,7 +296,7 @@ public class StudentServiceImpl implements StudentService {
 		sr.setPhone(student.getPhone());
 		sr.setStudentId(student.getStudentId());
 		sr.setCollegeName(student.getCollegeName());
-		
+		sr.setId(student.getId());
 		return sr;
 	}
 

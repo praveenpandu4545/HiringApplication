@@ -17,12 +17,12 @@ public class EmailService {
     @Autowired
     private JavaMailSender mailSender;
 
-    @Value("${app.email.enabled:true}")   // default true if property missing
+    @Value("${app.email.enabled:true}")   //default true if property missing
     private boolean emailEnabled;
 
     public void sendSimpleEmail(String to, String subject, String body) {
 
-        // 🔴 If email disabled → just skip
+        //If email disabled → just skip
         if (!emailEnabled) {
             System.out.println("Email service is temporarily disabled.");
             return;

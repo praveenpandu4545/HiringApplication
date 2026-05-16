@@ -23,4 +23,5 @@ public class User {
 
     @Enumerated(EnumType.STRING)
     private AccountStatus accountStatus;
+  
 }

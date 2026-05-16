@@ -28,7 +28,8 @@ public class SecurityConfig {
             .cors(cors -> {})   // ✅ VERY IMPORTANT
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
-                    .requestMatchers("/auth/**").permitAll()
+                    .requestMatchers("/auth/**","/api/generate-otp",
+                            "/api/validate-otp","/api/update-forgotten-password", "/springApi/student/get-user-id/**").permitAll()
                     .requestMatchers("/springApi/college/getAll").permitAll()
                     .requestMatchers("/ws/**").permitAll()
                     .requestMatchers("/api/chat/**").authenticated()

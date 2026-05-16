@@ -2,13 +2,21 @@ package com.praveen.controller;
 
 import com.praveen.dto.ProfileResponse;
 import com.praveen.dto.ResetPasswordRequest;
+import com.praveen.dto.UpdateForgottenPassword;
+import com.praveen.dto.ValidateOTP;
+import com.praveen.dto.generateOtpRequest;
 import com.praveen.entities.Employee;
+import com.praveen.entities.ForgotPasswordOTP;
 import com.praveen.entities.Student;
 import com.praveen.entities.User;
 import com.praveen.repository.EmployeeRepository;
 import com.praveen.repository.StudentRepository;
 import com.praveen.repository.UserRepository;
+import com.praveen.service.ForgotPasswordService;
 
+import java.util.Optional;
+
+import org.apache.catalina.connector.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -30,6 +38,9 @@ public class ProfileController {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+    
+    @Autowired
+    private ForgotPasswordService FPO;
 
     @GetMapping("/profile")
     public ResponseEntity<?> getProfile(Authentication authentication) {
@@ -99,4 +110,46 @@ public class ProfileController {
 
         return ResponseEntity.ok("Password updated successfully");
     }
+    
+    @PostMapping("/generate-otp")
+    public ResponseEntity<String> generateOtp(
+            @RequestBody generateOtpRequest request) {
+
+        String response =
+                FPO.generateOTP(
+                        request.getEmail(),
+                        request.getResetting()
+                );
+
+        if(response.equals("E-Mail already exists")) {
+
+            return ResponseEntity
+                    .badRequest()
+                    .body(response);
+        }
+
+        return ResponseEntity.ok(response);
+    }
+    
+    @PostMapping("/validate-otp")
+    public ResponseEntity<Boolean> validateOtp(@RequestBody ValidateOTP req){	
+    	Boolean response = FPO.validateOTP(req.getEmail(), req.getOtp());
+    	return ResponseEntity.ok(response);
+    }
+    
+    @PostMapping("/update-forgotten-password")
+    public ResponseEntity<?> updatePassword(@RequestBody UpdateForgottenPassword request){
+    	Optional<User> optionalUser = userRepository.findByEmail(request.getEmail());
+    	if(optionalUser.isPresent()) {
+    		User user = optionalUser.get();
+    		user.setPassword(passwordEncoder.encode(request.getPassword()));
+    		userRepository.save(user);
+    		return ResponseEntity.ok("Password updated succesfully");
+    	}
+    	else {
+    		return ResponseEntity.badRequest().body("User not found");
+    	}
+    }
+    
+    
 }

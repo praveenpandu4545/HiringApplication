@@ -3,6 +3,7 @@ package com.praveen.controller;
 
 import com.praveen.dto.ChangePasswordRequest;
 import com.praveen.dto.DriveResponse;
+import com.praveen.dto.IdDTO;
 import com.praveen.dto.StudentResponse;
 import com.praveen.dto.StudentRoundStatusResponse;
 import com.praveen.entities.Drive;
@@ -118,6 +119,19 @@ public class StudentController {
                     .badRequest()
                     .body("Unable to fetch rounds due to " + e.getMessage());
         }
+    }
+    
+    @GetMapping("/get-user-id/{studentId}")
+    public ResponseEntity<?> getUserId( @PathVariable Long studentId){
+    	Optional<Student> optionalStudent = studentRepository.findById(studentId);
+    	if(optionalStudent.isPresent()) {
+    		Student student = optionalStudent.get();
+    		Long userId = student.getUser().getId();
+    		return ResponseEntity.ok(userId);
+    	}
+    	return ResponseEntity
+                .badRequest()
+                .body("Student not found");
     }
 
     

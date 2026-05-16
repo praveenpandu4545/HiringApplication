@@ -48,5 +48,19 @@ public class EmailUtil {
         emailService.sendSimpleEmail(to, subject, body);
 
 	}
+	
+	public void generateOTP(String to, String otp) {
+		String subject = "AutoHire validation request";
+		
+		String body = "Hello,\n\n" +
+		            "We received a request to authenticate your account .\n\n" +
+		            "Your One-Time Password (OTP) is: " + otp + "\n\n" +
+		            "This OTP is valid for the next 5 minutes.\n" +
+		            "Please do not share this OTP with anyone for security reasons.\n\n" +
+		            "Regards,\n" +
+		            "Team AutoHire AI";
+		emailService.sendSimpleEmail(to, subject, body);
+		 
+	}
 }
 
