@@ -24,6 +24,7 @@ public class StudentRoundStatus {
     private int roundNumber;
     private String roundName;
     private String status; 
+    private Boolean canSchedule;
     
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)

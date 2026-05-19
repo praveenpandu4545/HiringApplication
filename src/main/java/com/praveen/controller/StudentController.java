@@ -1,6 +1,7 @@
 
 package com.praveen.controller;
 
+import com.praveen.dto.AllStudentResponse;
 import com.praveen.dto.ChangePasswordRequest;
 import com.praveen.dto.DriveResponse;
 import com.praveen.dto.IdDTO;
@@ -132,6 +133,18 @@ public class StudentController {
     	return ResponseEntity
                 .badRequest()
                 .body("Student not found");
+    }
+    
+    @GetMapping("/getAllStudents")
+    public ResponseEntity<?> getAllStudents(){
+    	 List<AllStudentResponse> response = studentService.getAllStudents();
+    	 return ResponseEntity.ok(response);
+    }
+    
+    @GetMapping("/getAllPanels")
+    public ResponseEntity<?> getAllPanels(){
+    	 List<AllStudentResponse> response = studentService.getAllPanels();
+    	 return ResponseEntity.ok(response);
     }
 
     

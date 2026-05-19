@@ -29,4 +29,6 @@ public class Round {
     
     @OneToMany(mappedBy = "round", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Assessment> assessments = new ArrayList<>();
+    
+    private Boolean canSchedule;
 }

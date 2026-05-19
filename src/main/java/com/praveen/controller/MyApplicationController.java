@@ -92,7 +92,7 @@ public class MyApplicationController {
                 srs.setRoundNumber(r.getRoundNumber());
                 srs.setStatus("PENDING");
                 srs.setStudentDrive(sd);
-
+                srs.setCanSchedule(r.getCanSchedule());
                 sd.getStudentRoundStatuses().add(srs);
             }
 

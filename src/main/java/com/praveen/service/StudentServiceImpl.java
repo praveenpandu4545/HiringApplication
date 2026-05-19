@@ -1,5 +1,6 @@
 package com.praveen.service;
 
+import com.praveen.dto.AllStudentResponse;
 import com.praveen.dto.ChangePasswordRequest;
 import com.praveen.dto.DriveResponse;
 import com.praveen.dto.RoundResponse;
@@ -41,6 +42,8 @@ public class StudentServiceImpl implements StudentService {
 	@Autowired
 	private InterviewScheduleRepository interviewScheduleRepository;
 
+	@Autowired
+	private EmployeeRepository employeeRepository;
 
 	@Transactional
 	@Override
@@ -108,6 +111,7 @@ public class StudentServiceImpl implements StudentService {
 	            srs.setRoundNumber(r.getRoundNumber());
 	            srs.setStatus("PENDING");
 	            srs.setStudentDrive(sd);
+	            srs.setCanSchedule(r.getCanSchedule());
 
 	            sd.getStudentRoundStatuses().add(srs);
 	        }
@@ -220,6 +224,7 @@ public class StudentServiceImpl implements StudentService {
 	            srsr.setRoundName(srs.getRoundName());
 	            srsr.setRoundNumber(srs.getRoundNumber());
 	            srsr.setStatus(srs.getStatus());
+	            srsr.setCanSchedule(srs.getCanSchedule());
 
 	            // 🔥 CHECK INTERVIEW
 	            Optional<InterviewSchedule> interviewOpt =
@@ -298,6 +303,38 @@ public class StudentServiceImpl implements StudentService {
 		sr.setCollegeName(student.getCollegeName());
 		sr.setId(student.getId());
 		return sr;
+	}
+
+
+	@Override
+	public List<AllStudentResponse> getAllStudents() {
+		List<Student> students = studentRepository.findAll();
+		List<AllStudentResponse> response = new ArrayList<>();
+		for(Student s : students) {
+			AllStudentResponse asr = new AllStudentResponse();
+			asr.setEmail(s.getEmail());
+			asr.setId(s.getId());
+			asr.setName(s.getName());
+			response.add(asr);
+		}
+		return response;
+	}
+
+
+	@Override
+	public List<AllStudentResponse> getAllPanels() {
+		List<Employee> panels = employeeRepository.findAll();
+		List<AllStudentResponse> response = new ArrayList<>();
+		for(Employee s : panels) {
+			Role role = s.getUser().getRole();
+			if(role == Role.HR) continue; 
+			AllStudentResponse asr = new AllStudentResponse();
+			asr.setEmail(s.getEmail());
+			asr.setId(s.getId());
+			asr.setName(s.getName());
+			response.add(asr);
+		}
+		return response;
 	}
 
 //	@Override

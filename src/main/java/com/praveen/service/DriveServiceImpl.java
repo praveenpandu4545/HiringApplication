@@ -47,6 +47,7 @@ public class DriveServiceImpl implements DriveService {
             round.setRoundNumber(r.getRoundNumber());
             round.setRoundName(r.getRoundName());
             round.setDrive(drive);
+            round.setCanSchedule(r.getCanSchedule());
             roundEntities.add(round);
         }
 

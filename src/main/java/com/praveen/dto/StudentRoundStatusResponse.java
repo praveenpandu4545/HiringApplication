@@ -12,6 +12,7 @@ public class StudentRoundStatusResponse {
     private String roundName;
     private int roundNumber;
     private String status;
+    private Boolean canSchedule;
 
     // 🔥 NEW FIELDS
     private boolean interviewScheduled;

@@ -8,5 +8,6 @@ import lombok.*;
 public class RoundRequest {
     private int roundNumber;
     private String roundName;
+    private Boolean canSchedule;
 }
 
