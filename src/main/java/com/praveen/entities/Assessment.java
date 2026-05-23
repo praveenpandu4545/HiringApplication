@@ -78,4 +78,7 @@ public class Assessment {
 
     private LocalDateTime  createdAt;
     private LocalDateTime  updatedAt;
+    
+    @Column(nullable = false)
+    private boolean deleted = false;
 }

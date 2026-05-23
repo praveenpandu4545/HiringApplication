@@ -151,7 +151,9 @@ public class AssessmentServiceImpl implements AssessmentService {
 
         List<Assessment> list = assessmentRepository.findAll();
 
-        return list.stream().map(a -> AssessmentResponse.builder()
+        return list.stream().
+        		filter(a -> !a.isDeleted())
+        		.map(a -> AssessmentResponse.builder()
                 .id(a.getId())
                 .title(a.getTitle())
                 .description(a.getDescription())

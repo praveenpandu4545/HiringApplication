@@ -74,7 +74,14 @@ public class DriveServiceImpl implements DriveService {
 		List<Drive> drives = driveRepository.findAll();
 		List<DriveResponse> driveResponses = new ArrayList<>();
 		for(Drive d : drives) {
-			driveResponses.add(mapDriveToDriveResponse(d));
+			String clgName = d.getCollegeName();
+			College clg = collegeRepository.findByCollegeName(clgName).
+					orElseThrow(()-> new RuntimeException("College not found"));
+			if(!clg.isDeleted()) {
+				if(!d.isDeleted()) {
+					driveResponses.add(mapDriveToDriveResponse(d));
+				}
+			}	
 		}
 		return driveResponses;
 	}
@@ -120,6 +127,7 @@ public class DriveServiceImpl implements DriveService {
         List<Drive> drives = driveRepository.findByCollegeName(collegeName);
 
         return drives.stream()
+        		.filter(drive -> !drive.isDeleted())
                 .map(this::convertToStudentDriveDTO)
                 .collect(Collectors.toList());
     }

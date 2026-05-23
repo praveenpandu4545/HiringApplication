@@ -34,6 +34,7 @@ public class SecurityConfig {
                     .requestMatchers("/ws/**").permitAll()
                     .requestMatchers("/api/chat/**").authenticated()
                     .requestMatchers("/springApi/interviews/**").permitAll()
+                    .requestMatchers("/springApi/delete/**").permitAll()
                     .anyRequest().authenticated()
             )
             .sessionManagement(session ->

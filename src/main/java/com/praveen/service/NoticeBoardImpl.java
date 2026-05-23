@@ -72,6 +72,13 @@ public class NoticeBoardImpl implements NoticeBoardService {
 
     @Override
     public List<NoticeBoard> getAllNotices() {
-        return noticeBoardRepository.findAll();
+        List<NoticeBoard> notices =  noticeBoardRepository.findAll();
+        List<NoticeBoard> response = new ArrayList<>();
+        for(NoticeBoard nb : notices) {
+        	if(!nb.isDeleted()) {
+        		response.add(nb);
+        	}
+        }
+        return response;
     }
 }

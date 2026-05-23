@@ -41,4 +41,7 @@ public class Drive {
 	@OneToMany(mappedBy = "drive", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Assessment> assessments = new ArrayList<>();
 	
+	@Column(nullable = false)
+    private boolean deleted = false;
+	
 }

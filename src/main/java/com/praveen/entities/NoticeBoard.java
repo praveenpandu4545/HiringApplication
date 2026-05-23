@@ -30,4 +30,7 @@ public class NoticeBoard {
             orphanRemoval = true
     )
     private List<NoticeAttachment> attachments;
+    
+    @Column(nullable = false)
+    private boolean deleted = false;
 }

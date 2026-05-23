@@ -30,6 +30,9 @@ public class StudentAssessmentServiceImpl implements StudentAssessmentService {
         for (StudentAssessment sa : student.getStudentAssessments()) {
 
             Assessment a = sa.getAssessment();
+            if (a.isDeleted()) {
+                continue;
+            }
 
             StudentAssessmentResponse dto = StudentAssessmentResponse.builder()
                     .id(sa.getId())

@@ -29,5 +29,6 @@ public class College {
 	@OneToMany(mappedBy = "college", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<CollegeDrive> collegeDrives = new ArrayList<>();
 	
-
+    @Column(nullable = false)
+    private boolean deleted = false;
 }

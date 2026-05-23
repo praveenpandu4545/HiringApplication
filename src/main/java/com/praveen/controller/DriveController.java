@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.praveen.dto.CreateDriveRequest;
 import com.praveen.dto.DriveResponse;
 import com.praveen.entities.Drive;
+import com.praveen.repository.DriveRepository;
 import com.praveen.service.DriveService;
 
 import org.springframework.security.core.Authentication;
@@ -20,6 +21,9 @@ public class DriveController {
 
     @Autowired
     private DriveService driveService;
+    
+    @Autowired
+    private DriveRepository driveRepo;
 
     @PostMapping("/CreateDrive")
     public ResponseEntity<?> createDrive(@RequestBody CreateDriveRequest request) {
@@ -63,5 +67,17 @@ public class DriveController {
             return ResponseEntity.badRequest()
                     .body("Failed to fetch drives: " + e.getMessage());
         }
+    }
+    
+    @PatchMapping("/rename/{id}")
+    public ResponseEntity<?> renameDrive(@PathVariable Long id, @RequestParam String newName){
+    	Optional<Drive> drive = driveRepo.findById(id);
+    	if(drive.isPresent()) {
+    		Drive d = drive.get();
+    		d.setDriveName(newName);
+    		driveRepo.save(d);
+    		return ResponseEntity.ok("Drive name changed to " + newName);
+    	}
+    	else return ResponseEntity.badRequest().body("Drive not found");
     }
 }

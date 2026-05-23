@@ -38,7 +38,9 @@ public class CollegeController {
 			List<College> allColleges = collegeService.fetchAllColleges();
 			List<String> clgs = new ArrayList<>();
 			for(College clg : allColleges) {
-				clgs.add(clg.getCollegeName());
+				if(!clg.isDeleted()) {
+					clgs.add(clg.getCollegeName());
+				}
 			}
 			return ResponseEntity.ok(clgs);
 		}
