@@ -13,6 +13,7 @@ import com.praveen.repository.EmployeeRepository;
 import com.praveen.repository.StudentRepository;
 import com.praveen.repository.UserRepository;
 import com.praveen.service.ForgotPasswordService;
+import com.praveen.util.EmailUtil;
 
 import java.util.Optional;
 
@@ -41,6 +42,9 @@ public class ProfileController {
     
     @Autowired
     private ForgotPasswordService FPO;
+    
+    @Autowired
+    private EmailUtil emailUtil;
 
     @GetMapping("/profile")
     public ResponseEntity<?> getProfile(Authentication authentication) {
@@ -107,6 +111,8 @@ public class ProfileController {
         // Encode new password
         user.setPassword(passwordEncoder.encode(request.getNewPassword()));
         userRepository.save(user);
+        
+        emailUtil.reset_password(email);
 
         return ResponseEntity.ok("Password updated successfully");
     }
@@ -144,6 +150,8 @@ public class ProfileController {
     		User user = optionalUser.get();
     		user.setPassword(passwordEncoder.encode(request.getPassword()));
     		userRepository.save(user);
+    		String email = request.getEmail();
+    		emailUtil.reset_password(email);
     		return ResponseEntity.ok("Password updated succesfully");
     	}
     	else {

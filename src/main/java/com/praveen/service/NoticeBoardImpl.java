@@ -58,6 +58,8 @@ public class NoticeBoardImpl implements NoticeBoardService {
             notice.setAttachments(attachmentList);
 
             noticeBoardRepository.save(notice);
+            
+            
 
             return "Notice created successfully";
 

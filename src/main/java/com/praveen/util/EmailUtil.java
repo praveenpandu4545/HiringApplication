@@ -62,5 +62,43 @@ public class EmailUtil {
 		emailService.sendSimpleEmail(to, subject, body);
 		 
 	}
+	
+	public void reset_password(String to) {
+
+	    String subject = "Password Changed Successfully";
+
+	    String body = "Hello,\n\n"
+	            + "Your password has been changed successfully.\n\n"
+	            + "If you made this change, no further action is required.\n"
+	            + "If you did not change your password, please contact support immediately.\n\n"
+	            + "Regards,\n"
+	            + "AutoHire AI Team";
+
+	    emailService.sendSimpleEmail(to, subject, body);
+	}
+	
+	public void scheduleInterview(String to) {
+		 String subject = "Interview Scheduled Alert";
+
+		    String body = "Hello,\n\n"
+		            + "Regarding your drive, Your interview has been scheduled.\n\n"
+		            + "Kindly login into your account to know more details.\n"
+		            + "Regards,\n"
+		            + "AutoHire AI Team";
+
+		    emailService.sendSimpleEmail(to, subject, body);
+	}
+	
+	public void reScheduleInterview(String to) {
+		 String subject = "Interview Rescheduled Alert";
+
+		    String body = "Hello,\n\n"
+		            + "Regarding your drive, Your interview has been Rescheduled.\n\n"
+		            + "Kindly login into your account to know more details.\n"
+		            + "Regards,\n"
+		            + "AutoHire AI Team";
+
+		    emailService.sendSimpleEmail(to, subject, body);
+	}
 }
 

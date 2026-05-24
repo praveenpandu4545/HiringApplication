@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.io.UnsupportedEncodingException;
@@ -20,6 +21,7 @@ public class EmailService {
     @Value("${app.email.enabled:true}")   //default true if property missing
     private boolean emailEnabled;
 
+    @Async
     public void sendSimpleEmail(String to, String subject, String body) {
 
         //If email disabled → just skip

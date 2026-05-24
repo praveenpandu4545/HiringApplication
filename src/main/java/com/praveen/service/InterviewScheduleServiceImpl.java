@@ -3,6 +3,7 @@ package com.praveen.service;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +23,7 @@ import com.praveen.repository.InterviewScheduleRepository;
 import com.praveen.repository.StudentRepository;
 import com.praveen.repository.StudentRoundStatusRepository;
 import com.praveen.security.JwtUtil;
+import com.praveen.util.EmailUtil;
 
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -45,6 +47,9 @@ public class InterviewScheduleServiceImpl implements InterviewScheduleService {
     private final StudentRoundStatusRepository roundRepo;
     private final DriveRepository driveRepo;
     private final JwtUtil jwtUtil;
+    
+    @Autowired
+    public EmailUtil emailUtil;
     
     private static final Logger log =
             LoggerFactory.getLogger(InterviewScheduleServiceImpl.class);
@@ -70,7 +75,7 @@ public class InterviewScheduleServiceImpl implements InterviewScheduleService {
 
         // 3️⃣ Validate student belongs to this round
         Student actualStudent = round.getStudentDrive().getStudent();
-
+        String studentEmail = actualStudent.getEmail();
         if (!actualStudent.getId().equals(studentId)) {
             throw new RuntimeException("Student does not belong to this round");
         }
@@ -145,6 +150,8 @@ public class InterviewScheduleServiceImpl implements InterviewScheduleService {
         panelMember.getAssignedInterviews().add(schedule);
         hr.getScheduledInterviews().add(schedule);
         drive.getInterviewSchedules().add(schedule);
+        
+        emailUtil.scheduleInterview(studentEmail);
 
         return scheduleRepo.save(schedule);
     }
@@ -204,7 +211,14 @@ public class InterviewScheduleServiceImpl implements InterviewScheduleService {
                 .orElseThrow(() -> new RuntimeException("Interview not found"));
 
         Long studentId = existing.getStudent().getId();
-
+        
+        Optional<Student> student = studentRepo.findById(studentId);
+        String email = "";
+        if(student.isPresent()) {
+        	Student s = student.get();
+            email = s.getEmail();
+        }
+        
         // 3️⃣ Determine which panel to check
         Long finalPanelId;
 
@@ -273,6 +287,7 @@ public class InterviewScheduleServiceImpl implements InterviewScheduleService {
         existing.setStartTime(startTime);
         existing.setEndTime(endTime);
 
+        emailUtil.reScheduleInterview(email);
         return scheduleRepo.save(existing);
     }
     
